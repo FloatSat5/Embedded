@@ -33,6 +33,7 @@ ASM_SOURCES =
 # C++ sources
 CXX_SOURCES = \
 ../libs/lsm9ds1/lsm9ds1.cpp \
+../libs/motor/motor.cpp \
 $(main).cpp
 
 #######################################
