@@ -10,7 +10,7 @@ int encoder_get_count(void);
 void encoder_reset_count(void);
 float encoder_get_omega(const int dc);
 
-
+// Motor init
 Motor rw(PWM_IDX13, PWM_IDX14); // PD13 & PD14
 const uint16_t duty_cycle = 30;
 bool reverse_flag = true;
@@ -35,29 +35,28 @@ class HelloEncoder : public StaticThread<>
 
     // time, power and direction
     int tasks[9][2] = {
-      {0, 0},
-      {5, 1},
-      {15, 0},
-      {20, -1},
-      {30, 0},
-      {35, 1},
-      {45, -1},
-      {55, 0},
-      {60, 0},    
+      {0, 0}, //5s no power to make sure that it stands still
+      {5, 1}, //40s one direction
+      {45, 0}, //5s back to standstill
+      {50, -1}, //40s other direction
+      {90, 0}, //5s back to standstill
+      {95, 1}, //40s one direction
+      {135, -1}, //40s hard switch to other direction
+      {175, 0}, //5s back to standstill
+      {180, 0}, //end
     };
     int currentTask = 0;
     const int lastTask = 8;
-    // Motor init
-    
 
     // Encoder init
-    PRINTF("timestamp [ms], dc [count], rotations [count], degree [°], w[°/s], w [rad/s]\r\n");
+    PRINTF("timestamp [ms], dc [count], rotations [count], degree [°], dc diff [count], w[°/s], w [rad/s]\r\n");
     int last_dc = 0;
     int dc = 0;
 
-    const int loop_ms = 10;
+    const int loop_ms = 100;
     TIME_LOOP(NOW(), loop_ms * MILLISECONDS)
     {
+      // Motor
       if (SECONDS_NOW() >= tasks[currentTask][0])
       {
         rw.set_duty_cycle(tasks[currentTask][1] * duty_cycle);
@@ -73,25 +72,6 @@ class HelloEncoder : public StaticThread<>
           while(true){};
         }
       }
-
-      // Motor
-      // if (reverse_flag) {
-      //   rw.set_duty_cycle(-1 * duty_cycle * power_flag);
-      // } else {
-      //   rw.set_duty_cycle(duty_cycle * power_flag);
-      // }
-
-      // // reverse Motor every 5s
-      // if (NOW()/(MILLISECONDS*loop_ms) % (5*1000/loop_ms) == 0) {
-      //   reverse_flag = !reverse_flag;
-      //   PRINTF("reverse motor\r\n");
-      // }
-
-      // // deactivate Motor every 10s
-      // if (NOW()/(MILLISECONDS*loop_ms) % (10*1000/loop_ms) == 0) {
-      //   power_flag = !power_flag;
-      //   PRINTF("toggled motor power\r\n");
-      // }
 
       // Encoder
       dc = encoder_get_count();
@@ -141,7 +121,7 @@ float encoder_get_omega(const int dc)
   */
 
   const uint8_t cpr = 64;
-  const float dt = 0.010;
+  const float dt = 0.100;
   const float r = dc / (float)cpr;
   const float f = r / dt;
   const float omega = 2 * M_PI * f;
