@@ -34,7 +34,9 @@ ASM_SOURCES =
 CXX_SOURCES = \
 ../libs/lsm9ds1/lsm9ds1.cpp \
 ../libs/motor/motor.cpp \
-$(main).cpp
+../libs/pid/pid.cpp \
+../libs/madgwick/MadgwickAHRS.cpp \
+$(main)
 
 #######################################
 # binaries
@@ -101,7 +103,9 @@ C_INCLUDES =  \
 -I"../rodos/api" \
 -I"../rodos/default_usr_configs" \
 -I"../libs/lsm9ds1" \
--I"../libs/motor"
+-I"../libs/motor" \
+-I"../libs/pid" \
+-I"../libs/madgwick"
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
