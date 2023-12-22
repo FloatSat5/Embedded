@@ -35,7 +35,7 @@ CXX_SOURCES = \
 ../libs/lsm9ds1/lsm9ds1.cpp \
 ../libs/motor/motor.cpp \
 ../libs/pid/pid.cpp \
-../libs/madgwick/MadgwickAHRS.cpp \
+../libs/madgwick/madgwick.cpp \
 $(main)
 
 #######################################

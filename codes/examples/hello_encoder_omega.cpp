@@ -1,4 +1,4 @@
-// Encoder interface using STM32 encoder mode
+// Angular velocity of motor using encoder
 
 #include "rodos.h"
 #include "stm32f4xx.h"
@@ -6,6 +6,12 @@
 
 void encoder_init(void);
 int encoder_get_count(void);
+void encoder_reset_count(void);
+float encoder_get_omega(const int dc, const float dt, const uint8_t cpr);
+
+
+const uint8_t cpr = 64; // Counts per revolution
+const float dt = 0.015; // Sample time, s
 
 class HelloEncoder : public StaticThread<>
 {
@@ -17,9 +23,11 @@ class HelloEncoder : public StaticThread<>
   void run()
   {
     init();
-    TIME_LOOP(NOW(), 15 * MILLISECONDS)
+    TIME_LOOP(NOW(), dt * 1000 * MILLISECONDS)
     {
-      PRINTF("count: %d\r\n", encoder_get_count());
+      int dc = encoder_get_count();
+      PRINTF("dc: %d, w: %f\r\n", dc, encoder_get_omega(dc, dt, cpr));
+      encoder_reset_count();
     }
   }
 } hello_encoder;
@@ -45,4 +53,30 @@ void encoder_init(void)
 int encoder_get_count(void)
 {
   return TIM2->CNT;
+}
+
+void encoder_reset_count(void)
+{
+  TIM2->CNT = 0;
+}
+
+
+/*
+  Compute angular velocity, rad/s
+
+  Inputs:
+    dc = Encoder counts in dt period
+    dt = sample time, s
+    cpr = Counts per rotation
+
+  Output:
+    w = Angular velocity, rad/s
+*/
+float encoder_get_omega(const int dc, const float dt, const uint8_t cpr)
+{
+  const float r = dc / (float)cpr; // Rotations during dt
+  const float f = r / dt; // Frequency, Hz
+  const float w = 2 * M_PI * f;
+
+  return w;
 }

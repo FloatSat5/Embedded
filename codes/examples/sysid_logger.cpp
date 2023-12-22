@@ -1,25 +1,29 @@
-// Encoder interface using STM32 encoder mode
+// Motor angular rate data logger for step response
+// Uses button to stop the motor
 
 #include "rodos.h"
 #include "stm32f4xx.h"
 #include <math.h>
 #include "motor.h"
 
+const int loop_ms = 50;
+const uint16_t duty_cycle = 100;
+
 void encoder_init(void);
 int encoder_get_count(void);
 void encoder_reset_count(void);
 float encoder_get_omega(const int dc);
 
-// Motor init
-Motor rw(PWM_IDX13, PWM_IDX14); // PD13 & PD14
-const uint16_t duty_cycle = 30;
-bool reverse_flag = true;
-bool power_flag = false;
+// Motor init, PD13 & PD14
+Motor rw(PWM_IDX13, PWM_IDX14);
+HAL_GPIO button(GPIO_033);
 
 class HelloEncoder : public StaticThread<>
 {
   void init()
   {
+    button.init(false, 1, 0);
+
     const uint16_t frequency = 2000;
     const uint16_t increments = 1000;
 
@@ -33,51 +37,19 @@ class HelloEncoder : public StaticThread<>
   {
     init();
 
-    // time, power and direction
-    int tasks[9][2] = {
-      {0, 0}, //5s no power to make sure that it stands still
-      {5, 1}, //40s one direction
-      {45, 0}, //5s back to standstill
-      {50, -1}, //40s other direction
-      {90, 0}, //5s back to standstill
-      {95, 1}, //40s one direction
-      {135, -1}, //40s hard switch to other direction
-      {175, 0}, //5s back to standstill
-      {180, 0}, //end
-    };
-    int currentTask = 0;
-    const int lastTask = 8;
-
-    // Encoder init
-    PRINTF("timestamp [ms], dc [count], rotations [count], degree [°], dc diff [count], w[°/s], w [rad/s]\r\n");
-    int last_dc = 0;
-    int dc = 0;
-
-    const int loop_ms = 100;
+    PRINTF("t [s], w [rad/s]\n");
     TIME_LOOP(NOW(), loop_ms * MILLISECONDS)
     {
-      // Motor
-      if (SECONDS_NOW() >= tasks[currentTask][0])
+      if (button.readPins())
       {
-        rw.set_duty_cycle(tasks[currentTask][1] * duty_cycle);
-        //PRINTF("Started Task %d at %fs: motor speed %d\r\n", currentTask, SECONDS_NOW(), tasks[currentTask][1]);
-        if (currentTask < lastTask)
-        {
-          currentTask++;
-          //PRINTF("Now waiting for Task %d at %ds: motor speed %d\r\n", currentTask, tasks[currentTask][0], tasks[currentTask][1]);
-        }
-        else
-        {
-          PRINTF("All Tasks completed!\r\n");
-          while(true){};
-        }
+        int dc = encoder_get_count();
+        PRINTF("%f, %f\n", SECONDS_NOW(), encoder_get_omega(dc));
+        rw.set_duty_cycle(duty_cycle);
       }
-
-      // Encoder
-      dc = encoder_get_count();
-      PRINTF("%lld, %d, %d, %f, %d, %f, %f\r\n", NOW()/(MILLISECONDS), dc, dc/64,
-        dc/64.f*360, dc-last_dc, (dc-last_dc)/64.f*360*loop_ms, encoder_get_omega(dc-last_dc));
-      last_dc = dc;
+      else
+      {
+        rw.brake();
+      }
     }
   }
 } hello_encoder;
@@ -100,9 +72,12 @@ void encoder_init(void)
   TIM2->CR1 |= TIM_CR1_CEN;
 }
 
+// Counts since last call
 int encoder_get_count(void)
 {
-  return TIM2->CNT;
+  uint32_t count = TIM2->CNT;
+  TIM2->CNT = 0;
+  return count;
 }
 
 void encoder_reset_count(void)
