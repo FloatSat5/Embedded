@@ -1,19 +1,14 @@
 # Embedded
 
-### Folder structure
-1. [codes/examples](/codes/examples) - Test software for each component
-2. [codes/rodos](/codes/rodos/) - RODOS source code
-3. [codes/libs](/codes/libs/) - Custom libraries for GRABSAT-I
-3. [codes/visualizer](/codes/visualizer/) - Simple attitude visualizer
 
-### Libraries
-1. [lsm9ds1](/codes/libs/lsm9ds1) - LSM9DS1 IMU + magnetometer interface
-2. [pid](/codes/libs/pid) - PID controller
-3. [motor](/codes/libs/motor) - TB9051FTG interface for drive-brake (slow decay) operation.
-3. [madgwick](/codes/libs/madgwick/) - Implementation of Madgwick's filter
+### codes/grabsat
+1. [examples](codes/grabsat/examples) - Test software for different components
+2. [rodos](codes/grabsat/rodos) - RODOS source code
+3. [libs](codes/grabsat/libs) - Custom libraries for GRABSAT-I
+3. [visualizer](codes/visualizer) - Simple attitude visualizer
 
-### Todos
-1. Trajectory tracking of motor $\omega$.
-2. Satellite angular position/velocity control simulation.
-3. Reliable yaw estimation using EKF.
-4. Parser and encoder for telecommand/telemetry data format.
+### codes/grabsat/libs
+1. [lsm9ds1](/codes/grabsat/libs/lsm9ds1) - LSM9DS1 IMU + magnetometer interface
+2. [pid](/codes/grabsat/libs/pid) - PID controller
+3. [motor](/codes/grabsat/libs/motor) - TB9051FTG interface for drive-brake (slow decay) operation.
+3. [madgwick](/codes/grabsat/libs/madgwick/) - Implementation of Madgwick's filter
