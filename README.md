@@ -11,7 +11,10 @@
 1. [lsm9ds1](/codes/grabsat/libs/lsm9ds1) - LSM9DS1 IMU + magnetometer interface
 2. [pid](/codes/grabsat/libs/pid) - PID controller
 3. [motor](/codes/grabsat/libs/motor) - TB9051FTG interface for drive-brake (slow decay) operation.
-3. [madgwick](/codes/grabsat/libs/madgwick/) - Implementation of Madgwick's filter
+4. [madgwick](/codes/grabsat/libs/madgwick/) - Implementation of Madgwick's filter
+5. [rc_lpf](/codes/grabsat/libs/rc_lpf/) - RC low-pass filter for smoothing angular velocity
+6. [encoder](/codes/grabsat/libs/encoder/) - Encoder interface using STM32F4's encoder mode
+
 
 ### codes/grabsat/satellite
 1. [telecommand](/codes/grabsat/satellite/telecommand.h) - Handles the telecommands from groundstation to GRABSAT-I

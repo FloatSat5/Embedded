@@ -36,6 +36,8 @@ CXX_SOURCES = \
 ../libs/motor/motor.cpp \
 ../libs/pid/pid.cpp \
 ../libs/madgwick/madgwick.cpp \
+../libs/encoder/encoder.cpp \
+../libs/rc_lpf/rc_lpf.cpp \
 $(main)
 
 #######################################
@@ -105,7 +107,9 @@ C_INCLUDES =  \
 -I"../libs/lsm9ds1" \
 -I"../libs/motor" \
 -I"../libs/pid" \
--I"../libs/madgwick"
+-I"../libs/madgwick" \
+-I"../libs/encoder" \
+-I"../libs/rc_lpf"
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections

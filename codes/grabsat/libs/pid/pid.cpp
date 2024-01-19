@@ -51,7 +51,8 @@ float pid::update(double e, double dt)
 
   ez = e;
   e2z = ez;
-  u2z = u;
+  uz = u;
+  u2z = uz;
 
   return u;
 }

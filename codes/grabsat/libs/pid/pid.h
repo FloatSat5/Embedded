@@ -10,7 +10,7 @@ class pid
 {
 private:
   float kp, ki, kd;
-  float ez = 0.0, e2z = 0.0, u2z = 0.0;
+  float ez = 0.0, e2z = 0.0, uz = 0.0, u2z = 0.0;
   float u_min = 0.0, u_max = 0.0;
 
   float saturate_control(const double in);
