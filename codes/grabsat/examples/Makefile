@@ -38,6 +38,7 @@ CXX_SOURCES = \
 ../libs/madgwick/madgwick.cpp \
 ../libs/encoder/encoder.cpp \
 ../libs/rc_lpf/rc_lpf.cpp \
+../libs/ft90mr/ft90mr.cpp \
 $(main)
 
 #######################################
@@ -61,7 +62,7 @@ CXX = arm-none-eabi-g++
 endif
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
- 
+
 #######################################
 # CFLAGS
 #######################################
@@ -79,7 +80,7 @@ MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 
 # macros for gcc
 # AS defines
-AS_DEFS = 
+AS_DEFS =
 
 # C defines
 C_DEFS =  \
@@ -109,7 +110,8 @@ C_INCLUDES =  \
 -I"../libs/pid" \
 -I"../libs/madgwick" \
 -I"../libs/encoder" \
--I"../libs/rc_lpf"
+-I"../libs/rc_lpf" \
+-I"../libs/ft90mr"
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
