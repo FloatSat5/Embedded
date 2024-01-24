@@ -4,8 +4,7 @@
 #include "stm32f4xx.h"
 #include <math.h>
 
-// PC4
-HAL_ADC adc(ADC_IDX1);
+HAL_ADC adc(ADC_IDX1); // PC4
 
 double get_voltage(const uint16_t adc)
 {
@@ -14,13 +13,12 @@ double get_voltage(const uint16_t adc)
   double max_vol = 3.0;
   double min_step = max_vol / 4096.0;
   double v_out = min_step * adc;
-  double v_in = (r1 + r2) *  v_out / r1; 
+  double v_in = (r1 + r2) *  v_out / r1;
 
-  // PRINTF("%d %lf %lf\n", adc, v_in, v_out);
   PRINTF("%lf %lf\n", v_in, v_out);
 
   return v_in;
-} 
+}
 
 class HelloADC : public StaticThread<>
 {
