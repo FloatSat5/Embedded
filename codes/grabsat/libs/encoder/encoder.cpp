@@ -5,20 +5,20 @@
 
 void encoder::init(void)
 {
-  // Encoder pins config: PE9 and PE11
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN;
-  GPIOE->MODER |= GPIO_MODER_MODER9_1 | GPIO_MODER_MODER11_1;
-  GPIOE->AFR[1] |= (1 << (9-8) * 4) | (1 << (11-8) * 4);
+  // Encoder pins config: PA0 and PA1
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+  GPIOA->MODER |= GPIO_MODER_MODER0_1 | GPIO_MODER_MODER1_1;
+  GPIOA->AFR[0] |= (1 << 0 * 4) | (1 << 1 * 4);
 
-  // TIM1 encoder mode 3. RM0090 Rev 19, Pg. 553
-  RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;
-  TIM1->SMCR |= TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1;
-  TIM1->CCER &= ~(TIM_CCER_CC1NP | TIM_CCER_CC1P);
-  TIM1->CCER &= ~(TIM_CCER_CC2NP | TIM_CCER_CC2P);
-  TIM1->CCMR1 |= TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0;
-  TIM1->CCMR1 &= ~(TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1 | TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_3);
-  TIM1->CCMR1 &= ~(TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_IC2F_2 | TIM_CCMR1_IC2F_3);
-  TIM1->CR1 |= TIM_CR1_CEN;
+  // TIM2 encoder mode 3. RM0090 Rev 18, Pg. 552
+  RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+  TIM2->SMCR |= TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1;
+  TIM2->CCER &= ~(TIM_CCER_CC1NP | TIM_CCER_CC1P);
+  TIM2->CCER &= ~(TIM_CCER_CC2NP | TIM_CCER_CC2P);
+  TIM2->CCMR1 |= TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0;
+  TIM2->CCMR1 &= ~(TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1 | TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_3);
+  TIM2->CCMR1 &= ~(TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_IC2F_2 | TIM_CCMR1_IC2F_3);
+  TIM2->CR1 |= TIM_CR1_CEN;
 }
 
 /*
@@ -44,10 +44,10 @@ float encoder::get_omega(const uint16_t cpr, const float dt)
 
 int32_t encoder::get_count(void)
 {
-  return (short)TIM1->CNT;
+  return TIM2->CNT;
 }
 
 void encoder::reset_count(void)
 {
-  TIM1->CNT = 0;
+  TIM2->CNT = 0;
 }
