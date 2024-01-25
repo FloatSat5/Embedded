@@ -27,6 +27,8 @@ void encoder::init(void)
   Input:
     cpr = counts per revolution, s
     dt = sample time, s
+
+  Caution: get_omega() resets TIM->CNT
 */
 float encoder::get_omega(const uint16_t cpr, const float dt)
 {

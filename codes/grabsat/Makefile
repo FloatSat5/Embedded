@@ -35,10 +35,17 @@ ASM_SOURCES =
 CXX_SOURCES = \
 libs/lsm9ds1/lsm9ds1.cpp \
 libs/motor/motor.cpp \
+libs/encoder/encoder.cpp \
 libs/pid/pid.cpp \
 libs/madgwick/madgwick.cpp \
+libs/ft90mr/ft90mr.cpp \
 satellite/telecommand.cpp \
-main.cpp
+satellite/telemetry.cpp \
+satellite/satellite.cpp \
+satellite/multimeter.cpp \
+threads/groundstation.cpp \
+threads/motor_control.cpp \
+threads/switch_board.cpp
 
 #######################################
 # binaries
@@ -107,8 +114,11 @@ C_INCLUDES =  \
 -I"libs/lsm9ds1" \
 -I"libs/motor" \
 -I"libs/pid" \
+-I"libs/encoder" \
 -I"libs/madgwick" \
--I"satellite"
+-I"libs/ft90mr" \
+-I"satellite" \
+-I"threads"
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections

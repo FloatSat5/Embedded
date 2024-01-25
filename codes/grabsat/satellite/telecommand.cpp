@@ -1,10 +1,16 @@
+#include "satellite.h"
+#include "multimeter.h"
 #include "telecommand.h"
+#include "switch_board.h"
+#include "satellite_config.h"
+
 #include <stdio.h>
 
 #define MAX_KEY_LENGTH 6
-#define TELECOMMAND_INVALID 555
 
-// Did you add teleidx for new telecommand?
+bool groundstation_thread_flag = true;
+
+// Did you add telecommand_idx for new telecommand?
 telecommands_t telecommands[] =
 {
   {"mosav", 0.0},
@@ -15,30 +21,30 @@ telecommands_t telecommands[] =
   {"exarm", 0.0},
   {"semag", 0.0},
   {"rearm", 0.0},
-  {"gkpmw", 0.0},
-  {"gkimw", 0.0},
-  {"gkpsa", 0.0},
-  {"gkisa", 0.0},
-  {"gkpsw", 0.0},
-  {"gkisw", 0.0}
+  {"gkpmw", PID_MOTOR_KP},
+  {"gkimw", PID_MOTOR_KI},
+  {"gkpsa", PID_YAW_KI},
+  {"gkisa", PID_YAW_KP},
+  {"gkpsw", PID_OMEGA_KP},
+  {"gkisw", PID_OMEGA_KI}
 };
 
-// Returns teleidx for valid telecommand and -1 otherwise
-teleidx decode_telecommand(const char *tc, const float value)
+// Returns telecommand_idx for valid telecommand and -1 otherwise
+telecommand_idx decode_telecommand(const char *tc, const float value)
 {
   for (int i = 0; i < (int)(sizeof(telecommands) / sizeof(telecommands_t)); i++)
   {
     if (!strcmp(telecommands[i].command, tc))
     {
       telecommands[i].value = value;
-      return (teleidx)i;
+      return (telecommand_idx)i;
     }
   }
 
   return invalid;
 }
 
-teleidx telecommand::parse(const uint8_t *msg, int n)
+telecommand_idx telecommand::parse(const uint8_t *msg, int n)
 {
 
   int index = 0;
@@ -55,8 +61,8 @@ teleidx telecommand::parse(const uint8_t *msg, int n)
     }
     command[i] = '\0';
 
-    // If no value
-    if (index + 1 >= n)
+    // Missing comma or no value after comma
+    if (index + 1 >= n || msg[index] != ',')
     {
       return invalid;
     }
@@ -76,25 +82,74 @@ teleidx telecommand::parse(const uint8_t *msg, int n)
   return invalid;
 }
 
+void telecommand::execute(const telecommand_idx idx)
+{
+
+  switch (idx)
+  {
+  case mosav:
+  {
+    current_mode = satellite_mode::motor;
+    break;
+  }
+
+  case sangp:
+  {
+    current_mode = satellite_mode::yaw;
+    break;
+  }
+
+  case sangv:
+  {
+    current_mode = satellite_mode::omega;
+    break;
+  }
+
+  case exarm:
+  {
+    satellite::extend_arm(SERVO_ARM_SPEED);
+    break;
+  }
+
+  case swoff:
+  {
+    current_mode = satellite_mode::idle;
+    break;
+  }
+
+  default:
+    break;
+  }
+
+  switch_board::enable_thread(current_mode);
+}
+
 // Print the current status of all telecommands
-void telecommand::print(void)
+bool telecommand::print(void)
 {
   PRINTF("\n");
   for (int i = 0; i < (int)(sizeof(telecommands) / sizeof(telecommands_t)); i++)
   {
     PRINTF("%s: %f\n", telecommands[i].command, telecommands[i].value);
   }
+  return true;
 }
 
 // Display value of specific telecommand
-void telecommand::print(teleidx ti)
+bool telecommand::print(const telecommand_idx ti)
 {
-  if (ti == teleidx::invalid)
+  bool output = false;
+
+  if (ti == telecommand_idx::invalid)
   {
     PRINTF("Invalid command!\n");
+    output = false;
   }
   else
   {
     PRINTF("%s: %f\n", telecommands[ti].command, telecommands[ti].value);
+    output = true;
   }
+
+  return output;
 }

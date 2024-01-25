@@ -7,7 +7,7 @@
 #include <inttypes.h>
 
 // Order must correspond to telecommands[]
-enum teleidx
+enum telecommand_idx
 {
   // Modes
   mosav, // Set motor angular velocity, deg/min [float]
@@ -21,7 +21,7 @@ enum teleidx
   semag, // Set electromagnet active/inactive [bool]
   rearm, // Retract arm [bool]
 
-  // Control params
+  // Control paramsexarm
   gkpmw,   // Set Kp for motor angular velocity [float]
   gkimw,   // Set Ki for motor angular velocity [float]
   gkpsa,   // Set Kp for sat angle [float]
@@ -41,11 +41,11 @@ struct telecommands_t
 
 namespace telecommand
 {
-  teleidx parse(const uint8_t *msg, int n);
-  void execute(void);
+  telecommand_idx parse(const uint8_t *msg, int n);
+  void execute(const telecommand_idx idx);
 
-  void print(void);
-  void print(teleidx ti);
+  bool print(void);
+  bool print(const telecommand_idx ti);
 };
 
 #endif // telecommand.h

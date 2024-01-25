@@ -9,17 +9,25 @@
 
 ### codes/grabsat/libs
 1. [lsm9ds1](/codes/grabsat/libs/lsm9ds1) - LSM9DS1 IMU + magnetometer interface
-2. [pid](/codes/grabsat/libs/pid) - PID controller
+2. [pid](/codes/grabsat/libs/pid) - Discrete PID controller
 3. [motor](/codes/grabsat/libs/motor) - TB9051FTG interface for drive-brake (slow decay) operation.
 4. [madgwick](/codes/grabsat/libs/madgwick/) - Implementation of Madgwick's filter
 5. [rc_lpf](/codes/grabsat/libs/rc_lpf/) - RC low-pass filter for smoothing angular velocity
 6. [encoder](/codes/grabsat/libs/encoder/) - Encoder interface using STM32F4's encoder mode
-
+7. [ft90mr](/codes/grabsat/libs/ft90mr/) - Driver for FT90MR $360^{\circ}$ servo motor
 
 ### codes/grabsat/satellite
 1. [telecommand](/codes/grabsat/satellite/telecommand.h) - Handles the telecommands from groundstation to GRABSAT-I
-1. [satellite](README.md) - Handles the missions and modes of operation of GRABSAT-I
-1. [telemetry](README.md) - Handles telemetry to ground station
+2. [satellite](/codes/grabsat/satellite/satellite.h) - Handles the missions and modes of operation of GRABSAT-I
+3. [telemetry](/codes/grabsat/satellite/telemetry.h) - Handles telemetry to ground station
+4. [multimeter](/codes/grabsat/satellite/multimeter.h) - Measures battery current and voltage
+5. [satellite_config](/codes/grabsat/satellite/satellite_config.h) - Configuration file for satellite peripherals and control gains
+
+### codes/grabsat/threads
+1. [groundstation](/codes/grabsat/threads/groundstation.h) - Communication with groundstation
+2. [motor_control](/codes/grabsat/threads/motor_control.h) - Motor angular velocity control
+3. [switch_board](/codes/grabsat/threads/switch_board.h) - Interface to enable/disable threads. **Not a thread!**
+
 ### Todos
 1. Telemetry handler
 2. Design and document control law for satellite $\psi$ and $\omega$
