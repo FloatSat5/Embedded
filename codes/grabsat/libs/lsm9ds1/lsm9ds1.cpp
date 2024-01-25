@@ -18,14 +18,14 @@ void init_accel(void);
 void init_mag(void);
 
 // SCL-PB10, SDA-PB11
-HAL_I2C IMU(I2C_IDX2);
+HAL_I2C IMU(I2C_IDX3);
 
 // Initialize and check LSM9DS1
 bool lsm9ds1_init(void)
 {
   const int i2c_freq = 400000;
 	IMU.init(i2c_freq);
-	
+
   if(check_i2c())
   {
     init_gyro();

@@ -32,6 +32,8 @@
 1. Telemetry handler
 2. Design and document control law for satellite $\psi$ and $\omega$
 3. Test attitude estimation
+4. Communication of values between threads
+5. Clear PID after mode change?
 
 ### Dependencies
 1. <code>make</code> - To compile and flash code to STM32

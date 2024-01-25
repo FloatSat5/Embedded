@@ -3,7 +3,7 @@
 #include "rodos.h"
 #include "motor.h"
 
-Motor rw(PWM_IDX13, PWM_IDX14); // PD13 & PD14
+Motor rw(PWM_IDX02, PWM_IDX03); // PE13 & PE14
 const uint16_t duty_cycle = 30;
 bool reverse_flag = true;
 

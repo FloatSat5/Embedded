@@ -38,6 +38,7 @@ void MotorControlThread::run()
     const float error = set_point - omega;
 
     // Compute control command and actuate
+    rw_pid.set_gains(telecommands[gkpmw].value, telecommands[gkimw].value, 0.0);
     const float pwm = rw_pid.update(error, dt);
     rw.set_duty_cycle(pwm);
 
