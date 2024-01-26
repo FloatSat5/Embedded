@@ -44,7 +44,7 @@ satellite/telemetry.cpp \
 satellite/satellite.cpp \
 satellite/multimeter.cpp \
 threads/groundstation.cpp \
-threads/motor_control.cpp \
+threads/control.cpp \
 threads/switch_board.cpp
 
 #######################################

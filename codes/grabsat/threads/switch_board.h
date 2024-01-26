@@ -8,8 +8,8 @@
 
 namespace switch_board
 {
-  void stop_motor_control(void);
-  void resume_motor_control(void);
+  void stop_control(void);
+  void resume_control(void);
   void enable_thread(const satellite_mode m);
 }
 
