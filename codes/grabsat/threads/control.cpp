@@ -34,7 +34,7 @@ float position_control(const float dt)
 // Motor omega control inner loop
 float motor_control(const float m_sp, const float dt)
 {
-  const float m_w = encoder::get_omega(ENCODER_CPR, dt);
+  const float m_w = encoder::get_omega_lpf(ENCODER_CPR, dt);
   const float m_err = m_sp - m_w;
   PRINTF("%f %f\n", m_sp, m_w);
 
@@ -56,6 +56,7 @@ void ControlThread::init()
 
   // Motor encoder configuration
   encoder::init();
+  encoder::set_lpf_fc(ENCODER_LPF_FC);
 }
 
 // Performs one of three control actions
@@ -65,10 +66,10 @@ void ControlThread::run()
   {
     if (stop_flag)
     {
-      // Forget PID past values
       m_pid.reset_memory();
       w_pid.reset_memory();
       y_pid.reset_memory();
+      rw.brake();
 
       suspendCallerUntil(END_OF_TIME);
     }

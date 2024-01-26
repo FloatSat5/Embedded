@@ -8,8 +8,6 @@
 
 #define MAX_KEY_LENGTH 6
 
-bool groundstation_thread_flag = true;
-
 // Did you add telecommand_idx for new telecommand?
 telecommands_t telecommands[] =
 {
@@ -23,8 +21,8 @@ telecommands_t telecommands[] =
   {"rearm", 0.0},
   {"gkpmw", PID_MOTOR_KP},
   {"gkimw", PID_MOTOR_KI},
-  {"gkpsa", PID_YAW_KI},
-  {"gkisa", PID_YAW_KP},
+  {"gkpsa", PID_YAW_KP},
+  {"gkisa", PID_YAW_KI},
   {"gkpsw", PID_OMEGA_KP},
   {"gkisw", PID_OMEGA_KI}
 };

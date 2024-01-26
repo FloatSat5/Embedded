@@ -39,6 +39,7 @@ libs/encoder/encoder.cpp \
 libs/pid/pid.cpp \
 libs/madgwick/madgwick.cpp \
 libs/ft90mr/ft90mr.cpp \
+libs/rc_lpf/rc_lpf.cpp \
 satellite/telecommand.cpp \
 satellite/telemetry.cpp \
 satellite/satellite.cpp \
@@ -116,6 +117,7 @@ C_INCLUDES =  \
 -I"libs/pid" \
 -I"libs/encoder" \
 -I"libs/madgwick" \
+-I"libs/rc_lpf" \
 -I"libs/ft90mr" \
 -I"satellite" \
 -I"threads"

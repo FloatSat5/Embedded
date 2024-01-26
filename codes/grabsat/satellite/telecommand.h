@@ -22,15 +22,15 @@ enum telecommand_idx
   rearm, // Retract arm [bool]
 
   // Control paramsexarm
-  gkpmw,   // Set Kp for motor angular velocity [float]
-  gkimw,   // Set Ki for motor angular velocity [float]
-  gkpsa,   // Set Kp for sat angle [float]
-  gkisa,   // Set Ki for sat angle [float]
-  gkpsw,   // Set Kp for sat angular velocity [float]
-  gkisw,   // Set Ki for sat angular velocity [float]
+  gkpmw, // Set Kp for motor angular velocity [float]
+  gkimw, // Set Ki for motor angular velocity [float]
+  gkpsa, // Set Kp for sat angle [float]
+  gkisa, // Set Ki for sat angle [float]
+  gkpsw, // Set Kp for sat angular velocity [float]
+  gkisw, // Set Ki for sat angular velocity [float]
 
   // None of above
-  invalid  // Invalid telecommand
+  invalid // Invalid telecommand
 };
 
 struct telecommands_t

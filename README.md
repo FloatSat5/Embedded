@@ -8,32 +8,32 @@
 5. [visualizer](codes/visualizer) - Simple attitude visualizer
 
 ### codes/grabsat/libs
-1. [lsm9ds1](/codes/grabsat/libs/lsm9ds1/lsm9ds1.h) - LSM9DS1 IMU + magnetometer interface
-2. [pid](/codes/grabsat/libs/pid/pid.h) - Discrete PID controller
-3. [motor](/codes/grabsat/libs/motor/motor.h) - TB9051FTG interface for drive-brake (slow decay) operation.
-4. [madgwick](/codes/grabsat/libs/madgwick/madgwick.h) - Implementation of Madgwick's filter
-5. [rc_lpf](/codes/grabsat/libs/rc_lpf/rc_lpf.h) - RC low-pass filter for smoothing angular velocity
-6. [encoder](/codes/grabsat/libs/encoder/encoder.h) - Encoder interface using STM32F4's encoder mode
-7. [ft90mr](/codes/grabsat/libs/ft90mr/ft90mr.h) - Driver for FT90MR $360^{\circ}$ servo motor
+1. [lsm9ds1](codes/grabsat/libs/lsm9ds1/lsm9ds1.h) - LSM9DS1 IMU + magnetometer interface
+2. [pid](codes/grabsat/libs/pid/pid.h) - Discrete PID controller
+3. [motor](codes/grabsat/libs/motor/motor.h) - TB9051FTG interface for drive-brake (slow decay) operation.
+4. [madgwick](codes/grabsat/libs/madgwick/madgwick.h) - Implementation of Madgwick's filter
+5. [rc_lpf](codes/grabsat/libs/rc_lpf/rc_lpf.h) - RC low-pass filter for smoothing angular velocity
+6. [encoder](codes/grabsat/libs/encoder/encoder.h) - Encoder interface using STM32F4's encoder mode
+7. [ft90mr](codes/grabsat/libs/ft90mr/ft90mr.h) - Driver for FT90MR $360^{\circ}$ servo motor
 
 ### codes/grabsat/satellite
-1. [telecommand](/codes/grabsat/satellite/telecommand.h) - Handles the telecommands from groundstation to GRABSAT-I
-2. [satellite](/codes/grabsat/satellite/satellite.h) - Handles the missions and modes of operation of GRABSAT-I
-3. [telemetry](/codes/grabsat/satellite/telemetry.h) - Handles telemetry to ground station
-4. [multimeter](/codes/grabsat/satellite/multimeter.h) - Measures battery current and voltage
-5. [satellite_config](/codes/grabsat/satellite/satellite_config.h) - Configuration file for satellite peripherals and control gains
+1. [telecommand](codes/grabsat/satellite/telecommand.h) - Handles the telecommands from groundstation to GRABSAT-I
+2. [satellite](codes/grabsat/satellite/satellite.h) - Handles the missions and modes of operation of GRABSAT-I
+3. [telemetry](codes/grabsat/satellite/telemetry.h) - Handles telemetry to ground station
+4. [multimeter](codes/grabsat/satellite/multimeter.h) - Measures battery current and voltage
+5. [satellite_config](codes/grabsat/satellite/satellite_config.h) - Configuration file for satellite peripherals and control gains
 
 ### codes/grabsat/threads
-1. [groundstation](/codes/grabsat/threads/groundstation.h) - Communication with groundstation
-2. [control](/codes/grabsat/threads/motor_control.h) - Motor angular velocity control
-3. [switch_board](/codes/grabsat/threads/switch_board.h) - Interface to enable/disable threads. **Not a thread!**
+1. [groundstation](codes/grabsat/threads/groundstation.h) - Communication with groundstation
+2. [control](codes/grabsat/threads/motor_control.h) - Motor angular velocity control
+3. [switch_board](codes/grabsat/threads/switch_board.h) - Interface to enable/disable threads. **Not a thread!**
 
 ### Todos
 1. Telemetry handler
 2. Design and document control law for satellite $\psi$ and $\omega$
 3. Test attitude estimation
 4. Communication of values between threads
-5. Clear PID after mode change?
+5. <del>Clear PID after mode change?</del>
 
 ### Dependencies
 1. <code>make</code> - To compile and flash code to STM32

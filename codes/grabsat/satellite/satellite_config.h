@@ -16,6 +16,7 @@
 
 // Encoder
 #define ENCODER_CPR 64 // Counts per revolution
+#define ENCODER_LPF_FC 0.9 // Check tune_lpf.m
 
 // Servo motors
 #define SERVO_ARM_PWM_IDX PWM_IDX08 // PA6
@@ -41,16 +42,15 @@
 
 // Thread periods, ms
 #define PERIOD_GROUNDSTATION 50
-#define PERIOD_MOTOR_CONTROL 10
-#define PERIOD_SATELLITE_CONTROL 10
+#define PERIOD_MOTOR_CONTROL 25
 
 /*
   PID control gains
 */
 
 // Motor angular rate
-#define PID_MOTOR_KP 5
-#define PID_MOTOR_KI 0.0
+#define PID_MOTOR_KP 10
+#define PID_MOTOR_KI 1
 #define PID_MOTOR_UMAX 100.0
 
 // Satellite angle
