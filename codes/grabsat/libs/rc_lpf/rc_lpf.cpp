@@ -1,18 +1,28 @@
 #include <math.h>
 #include "rc_lpf.h"
 
+const float fc_epsilon = 1e-3;
+
 rc_lpf::rc_lpf()
 {
+  set_fc(fc_epsilon);
 }
 
 rc_lpf::rc_lpf(const float fc)
 {
-  rc = 1 / (2.0 * M_PI * fc);
+  set_fc(fc);
 }
 
 void rc_lpf::set_fc(const float fc)
 {
-  rc = 1 / (2.0 * M_PI * fc);
+  if(abs(fc) < fc_epsilon)
+  {
+    rc = 1 / (2.0 * M_PI * fc_epsilon);
+  }
+  else
+  {
+    rc = 1 / (2.0 * M_PI * fc);
+  }
 }
 
 /*           __________________

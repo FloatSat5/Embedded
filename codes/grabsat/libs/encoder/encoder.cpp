@@ -1,7 +1,8 @@
 #include <math.h>
 
-#include "stm32f4xx.h"
+#include "rc_lpf.h"
 #include "encoder.h"
+#include "stm32f4xx.h"
 
 void encoder::init(void)
 {
@@ -19,6 +20,15 @@ void encoder::init(void)
   TIM2->CCMR1 &= ~(TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1 | TIM_CCMR1_IC1F_2 | TIM_CCMR1_IC1F_3);
   TIM2->CCMR1 &= ~(TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_IC2F_2 | TIM_CCMR1_IC2F_3);
   TIM2->CR1 |= TIM_CR1_CEN;
+}
+
+// LPF for motor omega
+rc_lpf omega_lpf;
+
+// Set cut-off frequency for LPF
+void encoder::set_lpf_fc(const float fc)
+{
+  omega_lpf.set_fc(fc);
 }
 
 /*
@@ -40,6 +50,12 @@ float encoder::get_omega(const uint16_t cpr, const float dt)
   const float w = 2 * M_PI * f;    // Omega, rad/s
 
   return w;
+}
+
+// Motor angular velocity with RC-LPF
+float encoder::get_omega_lpf(const uint16_t cpr, const float dt)
+{
+  return omega_lpf.update(get_omega(cpr, dt), dt);
 }
 
 int32_t encoder::get_count(void)

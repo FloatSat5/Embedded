@@ -1,17 +1,17 @@
 #include "switch_board.h"
-#include "motor_control.h"
+#include "control.h"
 
-void switch_board::stop_motor_control(void)
+void switch_board::stop_control(void)
 {
-  motor_control_thread.stop_flag = true;
+  control_thread.stop_flag = true;
 }
 
-void switch_board::resume_motor_control(void)
+void switch_board::resume_control(void)
 {
-  if (motor_control_thread.stop_flag == true)
+  if (control_thread.stop_flag == true)
   {
-    motor_control_thread.stop_flag = false;
-    motor_control_thread.resume();
+    control_thread.stop_flag = false;
+    control_thread.resume();
   }
 }
 
@@ -22,19 +22,19 @@ void switch_board::enable_thread(const satellite_mode m)
   {
   case idle:
   {
-    stop_motor_control();
+    stop_control();
     break;
   }
 
   case motor:
   {
-    resume_motor_control();
+    resume_control();
     break;
   }
 
   case yaw:
   {
-    stop_motor_control();
+    resume_control();
     break;
   }
 

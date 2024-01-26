@@ -15,6 +15,10 @@ namespace encoder
   void reset_count(void);
   int32_t get_count(void);
   float get_omega(const uint16_t cpr, const float dt);
+
+  // Angular velocity with LPF
+  void set_lpf_fc(const float fc);
+  float get_omega_lpf(const uint16_t cpr, const float dt);
 }
 
 #endif // encoder.h

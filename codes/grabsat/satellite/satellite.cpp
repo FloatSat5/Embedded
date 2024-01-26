@@ -6,7 +6,7 @@
 #include <inttypes.h>
 
 // Modes
-char *modes[] = {"idle", "motor", "yaw", "omega", "debris"};
+const char *modes[] = {"idle", "motor", "yaw", "omega", "debris"};
 satellite_mode current_mode = idle;
 
 // Servo motors
