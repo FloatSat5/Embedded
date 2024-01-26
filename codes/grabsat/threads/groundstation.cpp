@@ -1,7 +1,7 @@
-#include "satellite_config.h"
-#include "groundstation.h"
-#include "telecommand.h"
 #include "satellite.h"
+#include "telecommand.h"
+#include "groundstation.h"
+#include "satellite_config.h"
 
 HAL_UART bluetooth(GROUNDSTATION_UART_IDX);
 
@@ -32,5 +32,6 @@ void GroundstationThread::run()
 
 void GroundstationThread::init()
 {
+  satellite::init();
   bluetooth.init(GROUNDSTATION_UART_BAUD);
 }

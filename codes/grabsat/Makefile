@@ -40,9 +40,11 @@ libs/pid/pid.cpp \
 libs/madgwick/madgwick.cpp \
 libs/ft90mr/ft90mr.cpp \
 libs/rc_lpf/rc_lpf.cpp \
+libs/utils/utils.cpp \
 satellite/telecommand.cpp \
 satellite/telemetry.cpp \
 satellite/satellite.cpp \
+satellite/magnet.cpp \
 satellite/multimeter.cpp \
 threads/groundstation.cpp \
 threads/control.cpp \
@@ -119,6 +121,7 @@ C_INCLUDES =  \
 -I"libs/madgwick" \
 -I"libs/rc_lpf" \
 -I"libs/ft90mr" \
+-I"libs/utils" \
 -I"satellite" \
 -I"threads"
 

@@ -49,8 +49,8 @@
 */
 
 // Motor angular rate
-#define PID_MOTOR_KP 10
-#define PID_MOTOR_KI 1
+#define PID_MOTOR_KP 5
+#define PID_MOTOR_KI 0.2
 #define PID_MOTOR_UMAX 100.0
 
 // Satellite angle

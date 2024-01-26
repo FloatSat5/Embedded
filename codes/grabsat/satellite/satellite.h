@@ -23,7 +23,6 @@ namespace satellite
   void stop_arm(void);
   void extend_arm(const float speed);
   void retract_arm(const float speed);
-  void actuate_magnet(const bool state);
 };
 
 #endif // satellite.h

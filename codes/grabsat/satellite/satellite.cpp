@@ -1,6 +1,7 @@
-#include "satellite_config.h"
-#include "satellite.h"
 #include "ft90mr.h"
+#include "magnet.h"
+#include "satellite.h"
+#include "satellite_config.h"
 
 #include <rodos.h>
 #include <inttypes.h>
@@ -14,6 +15,7 @@ ft90mr arm(SERVO_ARM_PWM_IDX);
 
 void satellite::init(void)
 {
+  magnet::init();
 }
 
 // Print the current satellite mode
@@ -24,19 +26,15 @@ void satellite::print_mode()
 
 void satellite::extend_arm(const float speed)
 {
-  arm.run(SERVO_ARM_SPEED);
+  arm.run(-SERVO_ARM_SPEED);
 }
 
 void satellite::retract_arm(const float speed)
 {
-  arm.run(-SERVO_ARM_SPEED);
+  arm.run(+SERVO_ARM_SPEED);
 }
 
 void satellite::stop_arm(void)
 {
   arm.run(0);
-}
-
-void satellite::actuate_magnet(const bool state)
-{
 }

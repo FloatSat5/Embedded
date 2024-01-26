@@ -1,3 +1,5 @@
+#include "utils.h"
+#include "magnet.h"
 #include "satellite.h"
 #include "multimeter.h"
 #include "telecommand.h"
@@ -109,9 +111,23 @@ void telecommand::execute(const telecommand_idx idx)
     break;
   }
 
+  case rearm:
+  {
+    satellite::retract_arm(SERVO_ARM_SPEED);
+    break;
+  }
+
   case swoff:
   {
+    satellite::stop_arm();
     current_mode = satellite_mode::idle;
+    break;
+  }
+
+  case semag:
+  {
+    const bool magnet_state = utils::float_to_bool(telecommands[semag].value);
+    magnet::actuate(magnet_state);
     break;
   }
 

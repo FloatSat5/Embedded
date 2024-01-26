@@ -66,10 +66,11 @@ void ControlThread::run()
   {
     if (stop_flag)
     {
+      rw.brake();
       m_pid.reset_memory();
       w_pid.reset_memory();
       y_pid.reset_memory();
-      rw.brake();
+      encoder::reset_count();
 
       suspendCallerUntil(END_OF_TIME);
     }
