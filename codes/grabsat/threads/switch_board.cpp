@@ -34,7 +34,7 @@ void switch_board::enable_thread(const satellite_mode m)
 
   case yaw:
   {
-    stop_motor_control();
+    stop_control();
     break;
   }
 
