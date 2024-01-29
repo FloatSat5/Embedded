@@ -3,7 +3,7 @@
 ######################################
 # target
 ######################################
-TARGET = main
+TARGET = $(main).cpp
 
 ######################################
 # building variables
@@ -19,7 +19,7 @@ OPT = \
 # paths
 #######################################
 # Build path
-BUILD_DIR = build
+BUILD_DIR = build/build_$(main)
 
 ######################################
 # source
@@ -200,6 +200,9 @@ $(BUILD_DIR):
 #######################################
 flash: all
 	openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program $(BUILD_DIR)/$(TARGET).hex verify reset exit"
+
+reset:
+	openocd -f interface/stlink-v2-1.cfg -f target/stm32f4x.cfg -c "init reset run exit"
 
 #######################################
 # clean up
