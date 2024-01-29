@@ -7,6 +7,6 @@
  */
 
 void MAIN() __attribute__((weak));
-void MAIN() { RODOS::xprintf("Default internal MAIN\n"); }
+void MAIN() { RODOS::xprintf("Default internal MAIN1\n"); }
 
 

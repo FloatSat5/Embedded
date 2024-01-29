@@ -121,7 +121,7 @@ void TopicInterface::publishFromInterrupt(void *any, size_t len) {
 
 // Basic topic used for TBA
 Topic<GenericMsgRef> defaultGatewayTopic(0, "gatewayTopic");
-Topic<NetworkMessage> defaultRouterTopic(-1, "routerTopic");
+Topic<NetworkMessage> defaultRouterTopic(-1, "routerTopic1");
 
 Topic<void*> interruptTimer(-1,   "TimerInterrupt",  true); // all these are only local
 Topic<void*> interruptUart(-1,    "UartInterrupt",   true);
