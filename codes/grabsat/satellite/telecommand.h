@@ -4,7 +4,10 @@
 #define _GRABSAT_TELECOMMAND_H_
 
 #include "rodos.h"
+#include "satellite_config.h"
 #include <inttypes.h>
+
+extern HAL_UART bluetooth;
 
 // Order must correspond to telecommands[]
 enum telecommand_idx

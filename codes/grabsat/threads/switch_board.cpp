@@ -38,6 +38,12 @@ void switch_board::enable_thread(const satellite_mode m)
     break;
   }
 
+  case omega:
+  {
+    resume_control();
+    break;
+  }
+
   default:
     break;
   }

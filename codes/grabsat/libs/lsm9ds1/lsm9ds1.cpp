@@ -18,7 +18,7 @@ void init_accel(void);
 void init_mag(void);
 
 // SCL-PB10, SDA-PB11
-HAL_I2C IMU(I2C_IDX3);
+HAL_I2C IMU(I2C_IDX1);
 
 // Initialize and check LSM9DS1
 bool lsm9ds1_init(void)

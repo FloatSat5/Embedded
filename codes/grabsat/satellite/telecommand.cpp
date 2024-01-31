@@ -10,6 +10,9 @@
 
 #define MAX_KEY_LENGTH 6
 
+char msg[100] = {0};
+HAL_UART bluetooth(GROUNDSTATION_UART_IDX);
+
 // Did you add telecommand_idx for new telecommand?
 telecommands_t telecommands[] =
 {
@@ -141,10 +144,11 @@ void telecommand::execute(const telecommand_idx idx)
 // Print the current status of all telecommands
 bool telecommand::print(void)
 {
-  PRINTF("\n");
+  // PRINTF("\n");
   for (int i = 0; i < (int)(sizeof(telecommands) / sizeof(telecommands_t)); i++)
   {
-    PRINTF("%s: %f\n", telecommands[i].command, telecommands[i].value);
+    SPRINTF(msg, "%s: %f\n", telecommands[i].command, telecommands[i].value);
+    bluetooth.write(msg, sizeof(msg));
   }
   return true;
 }
@@ -156,12 +160,13 @@ bool telecommand::print(const telecommand_idx ti)
 
   if (ti == telecommand_idx::invalid)
   {
-    PRINTF("Invalid command!\n");
+    bluetooth.write("Invalid command!\n", 18);
     output = false;
   }
   else
   {
-    PRINTF("%s: %f\n", telecommands[ti].command, telecommands[ti].value);
+    SPRINTF(msg, "%s: %f\n", telecommands[ti].command, telecommands[ti].value);
+    bluetooth.write(msg, sizeof(msg));
     output = true;
   }
 
