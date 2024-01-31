@@ -5,6 +5,7 @@
 #include "control.h"
 #include "satellite.h"
 #include "telecommand.h"
+#include "multimeter.h"
 #include "satellite_config.h"
 
 pid m_pid; // Motor rate control
@@ -17,17 +18,21 @@ float omega_control(const float dt)
 {
   float g[3] = {1.0, 2.0, 3.0};
   lsm9ds1_read_gyro(g);
-  const float w = g[2];
+
+  const float w = g[2]-0.155;
   const float w_sp = telecommands[sangv].value;
   const float w_err = w_sp - w;
 
+  // Update gains (if changed using telecommand)
+  w_pid.set_gains(telecommands[gkpsw].value, telecommands[gkisw].value, 0.0);
+
+  float sp = -w_pid.update(w_err, dt);
+
+  // SPRINTF(msg, "%f | %f | %f | %f | %f | %f\n", w_sp, w, sp, telecommands[gkpsw].value, telecommands[gkisw].value, multimeter::get_voltage());
   SPRINTF(msg, "%f %f\n", w_sp, w);
   bluetooth.write(msg, sizeof(msg));
 
-  // Update gains (if changed using telecommand)
-  m_pid.set_gains(telecommands[gkpsw].value, telecommands[gkpsw].value, 0.0);
-
-  return w_pid.update(w_err, dt);
+  return sp;
 }
 
 // Satellite yaw control outer loop
@@ -63,6 +68,7 @@ void ControlThread::init()
   // PID configuration
   m_pid.set_gains(telecommands[gkpmw].value, telecommands[gkimw].value, 0.0);
   m_pid.set_control_limits(0, PID_MOTOR_UMAX);
+  w_pid.set_control_limits(0, PID_MOTOR_UMAX);
 
   // Motor driver configuration
   rw.set_frequency(RW_PWM_FREQUENCY);
@@ -71,6 +77,9 @@ void ControlThread::init()
   // Motor encoder configuration
   encoder::init();
   encoder::set_lpf_fc(ENCODER_LPF_FC);
+
+  // Multimeter
+  multimeter::init();
 
   // IMU init
   lsm9ds1_init();
