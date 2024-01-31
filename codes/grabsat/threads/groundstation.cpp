@@ -3,8 +3,6 @@
 #include "groundstation.h"
 #include "satellite_config.h"
 
-HAL_UART bluetooth(GROUNDSTATION_UART_IDX);
-
 void GroundstationThread::run()
 {
   while (1)
@@ -34,4 +32,5 @@ void GroundstationThread::init()
 {
   satellite::init();
   bluetooth.init(GROUNDSTATION_UART_BAUD);
+  bluetooth.write("\nHi Earthling ;)\n\n", 17);
 }

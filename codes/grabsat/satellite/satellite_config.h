@@ -4,6 +4,8 @@
 #ifndef _SATELLITE_CONFIG_H_
 #define _SATELLTIE_CONFIG_H_
 
+extern char msg[100];
+
 /*
   PIN-OUTS AND LOW-LEVEL CONFIG
 */
@@ -33,7 +35,7 @@
 #define MULTIMETER_MAX_ADC 4096.0
 
 // Groundstation
-#define GROUNDSTATION_UART_IDX UART_IDX3
+#define GROUNDSTATION_UART_IDX UART_IDX4
 #define GROUNDSTATION_UART_BAUD 115200
 
 /*
@@ -53,12 +55,12 @@
 #define PID_MOTOR_KI 0.2
 #define PID_MOTOR_UMAX 100.0
 
+// Satellite angular
+#define PID_OMEGA_KP 1.0
+#define PID_OMEGA_KI 0.5
+
 // Satellite angle
 #define PID_YAW_KP 0.0
 #define PID_YAW_KI 0.0
-
-// Satellite angular
-#define PID_OMEGA_KP 0.0
-#define PID_OMEGA_KI 0.0
 
 #endif // satellite_config.h
