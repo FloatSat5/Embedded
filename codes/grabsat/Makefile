@@ -42,12 +42,13 @@ libs/ft90mr/ft90mr.cpp \
 libs/rc_lpf/rc_lpf.cpp \
 libs/utils/utils.cpp \
 satellite/telecommand.cpp \
-satellite/telemetry.cpp \
 satellite/satellite.cpp \
 satellite/magnet.cpp \
 satellite/multimeter.cpp \
 threads/groundstation.cpp \
 threads/control.cpp \
+threads/topics.cpp \
+threads/telemetry.cpp \
 threads/switch_board.cpp
 
 #######################################

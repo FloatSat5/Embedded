@@ -4,11 +4,12 @@
 #ifndef _SATELLITE_CONFIG_H_
 #define _SATELLTIE_CONFIG_H_
 
-extern char msg[100];
-
 /*
   PIN-OUTS AND LOW-LEVEL CONFIG
 */
+
+// Telemetry buffer length
+#define BLUETOOTH_BUFFER_LEN 200
 
 // Reaction wheel
 #define RW_PWM1_IDX PWM_IDX02 // PE13
@@ -45,6 +46,7 @@ extern char msg[100];
 // Thread periods, ms
 #define PERIOD_GROUNDSTATION 50
 #define PERIOD_MOTOR_CONTROL 25
+#define PERIOD_TELEMETRY_CONTROL 100
 
 /*
   PID control gains

@@ -8,6 +8,7 @@
 #include <inttypes.h>
 
 extern HAL_UART bluetooth;
+extern char msg[BLUETOOTH_BUFFER_LEN];
 
 // Order must correspond to telecommands[]
 enum telecommand_idx

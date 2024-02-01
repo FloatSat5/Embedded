@@ -10,7 +10,7 @@
 
 #define MAX_KEY_LENGTH 6
 
-char msg[100] = {0};
+char msg[BLUETOOTH_BUFFER_LEN] = {0};
 HAL_UART bluetooth(GROUNDSTATION_UART_IDX);
 
 // Did you add telecommand_idx for new telecommand?

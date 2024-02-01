@@ -1,5 +1,6 @@
 #include "pid.h"
 #include "motor.h"
+#include "topics.h"
 #include "encoder.h"
 #include "lsm9ds1.h"
 #include "control.h"
@@ -7,6 +8,8 @@
 #include "telecommand.h"
 #include "multimeter.h"
 #include "satellite_config.h"
+
+telemetry_struct telemetry_tx;
 
 pid m_pid; // Motor rate control
 pid w_pid; // Satellite rate control
@@ -16,7 +19,7 @@ Motor rw(RW_PWM1_IDX, RW_PWM2_IDX);
 // Satellite angular rate control outer loop
 float omega_control(const float dt)
 {
-  float g[3] = {1.0, 2.0, 3.0};
+  float g[3] = {0.0};
   lsm9ds1_read_gyro(g);
 
   const float w = g[2]-0.155;
@@ -28,9 +31,9 @@ float omega_control(const float dt)
 
   float sp = -w_pid.update(w_err, dt);
 
-  // SPRINTF(msg, "%f | %f | %f | %f | %f | %f\n", w_sp, w, sp, telecommands[gkpsw].value, telecommands[gkisw].value, multimeter::get_voltage());
-  SPRINTF(msg, "%f %f\n", w_sp, w);
-  bluetooth.write(msg, sizeof(msg));
+  telemetry_tx.g[0] = g[0];
+  telemetry_tx.g[1] = g[1];
+  telemetry_tx.g[2] = g[2];
 
   return sp;
 }
@@ -51,14 +54,9 @@ float motor_control(const float m_sp, const float dt)
   const float m_w = encoder::get_omega_lpf(ENCODER_CPR, dt);
   const float m_err = m_sp - m_w;
 
-  if (current_mode == motor)
-  {
-    SPRINTF(msg, "%f %f\n", m_sp, m_w);
-    bluetooth.write(msg, sizeof(msg));
-  }
-
   // Update gains (if changed using telecommand)
   m_pid.set_gains(telecommands[gkpmw].value, telecommands[gkimw].value, 0.0);
+  telemetry_tx.w = m_w;
 
   return m_pid.update(m_err, dt);
 }
@@ -125,6 +123,8 @@ void ControlThread::run()
     // Perform inner control loop and actuate motor
     float pwm = motor_control(m_sp, dt);
     rw.set_duty_cycle(pwm);
+
+    telemetry_topic.publish(telemetry_tx);
 
     suspendCallerUntil(NOW() + PERIOD_MOTOR_CONTROL * MILLISECONDS);
   }
