@@ -1,5 +1,20 @@
-#include "switch_board.h"
+#include "arm.h"
 #include "control.h"
+#include "switch_board.h"
+
+void switch_board::stop_arm(void)
+{
+  arm_thread.stop_flag = true;
+}
+
+void switch_board::resume_arm(void)
+{
+  if (arm_thread.stop_flag == true)
+  {
+    arm_thread.stop_flag = false;
+    arm_thread.resume();
+  }
+}
 
 void switch_board::stop_control(void)
 {
@@ -41,6 +56,11 @@ void switch_board::enable_thread(const satellite_mode m)
   case omega:
   {
     resume_control();
+    break;
+  }
+
+  case debris:
+  {
     break;
   }
 

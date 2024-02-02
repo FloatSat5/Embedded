@@ -1,3 +1,4 @@
+#include "arm.h"
 #include "utils.h"
 #include "magnet.h"
 #include "satellite.h"
@@ -110,19 +111,24 @@ void telecommand::execute(const telecommand_idx idx)
 
   case exarm:
   {
-    satellite::extend_arm(SERVO_ARM_SPEED);
+    arm_thread.dir_flag = true;
+    arm_thread.period = telecommands[exarm].value;
+
+    switch_board::resume_arm();
     break;
   }
 
   case rearm:
   {
-    satellite::retract_arm(SERVO_ARM_SPEED);
+    arm_thread.dir_flag = false;
+    arm_thread.period = telecommands[rearm].value;
+
+    switch_board::resume_arm();
     break;
   }
 
   case swoff:
   {
-    satellite::stop_arm();
     current_mode = satellite_mode::idle;
     break;
   }
@@ -144,7 +150,6 @@ void telecommand::execute(const telecommand_idx idx)
 // Print the current status of all telecommands
 bool telecommand::print(void)
 {
-  // PRINTF("\n");
   for (int i = 0; i < (int)(sizeof(telecommands) / sizeof(telecommands_t)); i++)
   {
     SPRINTF(msg, "%s: %f\n", telecommands[i].command, telecommands[i].value);

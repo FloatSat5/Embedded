@@ -33,21 +33,22 @@ ASM_SOURCES =
 # C++ sources
 # $(main)
 CXX_SOURCES = \
-libs/lsm9ds1/lsm9ds1.cpp \
-libs/motor/motor.cpp \
-libs/encoder/encoder.cpp \
 libs/pid/pid.cpp \
-libs/madgwick/madgwick.cpp \
+libs/utils/utils.cpp \
+libs/motor/motor.cpp \
 libs/ft90mr/ft90mr.cpp \
 libs/rc_lpf/rc_lpf.cpp \
-libs/utils/utils.cpp \
-satellite/telecommand.cpp \
-satellite/satellite.cpp \
+libs/lsm9ds1/lsm9ds1.cpp \
+libs/encoder/encoder.cpp \
+libs/madgwick/madgwick.cpp \
 satellite/magnet.cpp \
+satellite/satellite.cpp \
 satellite/multimeter.cpp \
+satellite/telecommand.cpp \
 threads/groundstation.cpp \
-threads/control.cpp \
+threads/arm.cpp \
 threads/topics.cpp \
+threads/control.cpp \
 threads/telemetry.cpp \
 threads/switch_board.cpp
 

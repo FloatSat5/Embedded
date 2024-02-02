@@ -29,7 +29,8 @@
 2. [telemetry](/codes/grabsat/threads/telemetry.h) - Handles telemetry to ground station
 3. [control](/codes/grabsat/threads/control.h) - Motor angular velocity control
 4. [switch_board](/codes/grabsat/threads/switch_board.h) - Interface to enable/disable threads
-5. [topics](//codes/grabsat/threads/topics.h) - Topics for inter-thread communications
+5. [topics](/codes/grabsat/threads/topics.h) - Topics for inter-thread communications
+5. [arm](/codes/grabsat/threads/arm.h) - Handles the timing for magnet and balance arms
 
 ### Dependencies
 1. <code>make</code> - To compile and flash code to STM32
@@ -47,9 +48,8 @@
 
 ### Todos
 1. Attitude estimation
-2. Groundstation telemetry
-3. Stop servo automatically after certain time
-4. Design and documentation of satellite $\psi$ and $\omega$ control
+2. Design and documentation of satellite $\psi$ and $\omega$ control
+3. Should thread classes be <code>extern</code> or <code>static</code> (wrt. strange behavior of <code>dir_flag</code> of <code>ArmThread</code>) ?
 
 ### Notes
 The software is developed and tesed using Linux computer.

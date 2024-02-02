@@ -18,11 +18,6 @@ namespace satellite
 {
   void init(void);
   void print_mode(void);
-
-  // Arm functions
-  void stop_arm(void);
-  void extend_arm(const float speed);
-  void retract_arm(const float speed);
 };
 
 #endif // satellite.h
