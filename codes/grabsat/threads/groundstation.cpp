@@ -1,3 +1,4 @@
+#include "arm.h"
 #include "satellite.h"
 #include "telecommand.h"
 #include "groundstation.h"
@@ -24,6 +25,7 @@ void GroundstationThread::run()
       }
     }
 
+    arm_thread.check_limits();
     suspendCallerUntil(NOW() + PERIOD_GROUNDSTATION * MILLISECONDS);
   }
 }

@@ -12,6 +12,7 @@ public:
 
   void run();
   void init();
+  void check_limits();
 };
 
 extern ArmThread arm_thread;

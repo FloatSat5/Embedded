@@ -22,10 +22,12 @@
 #define ENCODER_LPF_FC 0.9 // Check tune_lpf.m
 
 // Servo motors
-#define SERVO_ARM_PWM_IDX PWM_IDX08 // PA6
-#define SERVO_BALANCE_PWM_IDX PWM_IDX10 // PB0
+#define SERVO_BALANCE_PWM_IDX PWM_IDX08 // PA6
+#define SERVO_ARM_PWM_IDX PWM_IDX10 // PB0
 #define SERVO_ARM_SPEED 30
 #define SERVO_ARM_RUN_RIME 3 // s
+#define SERVO_ARM_GPIO GPIO_046 // PC14
+#define SERVO_BALANCE_GPIO GPIO_045 // PC13
 
 // Multimeter
 #define MULTIMETER_ADC_IDX ADC_IDX1 // PC4
