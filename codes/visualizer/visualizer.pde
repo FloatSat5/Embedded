@@ -191,7 +191,7 @@ void listen()
          String parts[] = split(myString, ",");
          if(parts.length == 3)
          {
-           psi = float(parts[0]) * d2r*0;
+           psi = float(parts[0]) * d2r;
            theta = float(parts[1]) * d2r;
            phi = float(parts[2]) * d2r;
          }

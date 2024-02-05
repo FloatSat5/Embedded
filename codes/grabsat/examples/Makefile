@@ -36,6 +36,7 @@ CXX_SOURCES = \
 ../libs/motor/motor.cpp \
 ../libs/pid/pid.cpp \
 ../libs/madgwick/madgwick.cpp \
+../libs/mahony/mahony.cpp \
 ../libs/encoder/encoder.cpp \
 ../libs/rc_lpf/rc_lpf.cpp \
 ../libs/ft90mr/ft90mr.cpp \
@@ -109,6 +110,7 @@ C_INCLUDES =  \
 -I"../libs/motor" \
 -I"../libs/pid" \
 -I"../libs/madgwick" \
+-I"../libs/mahony" \
 -I"../libs/encoder" \
 -I"../libs/rc_lpf" \
 -I"../libs/ft90mr"
