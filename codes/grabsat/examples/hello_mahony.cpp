@@ -55,6 +55,8 @@ class HelloMahony : public StaticThread<>
 
       float ypr[3];
       filter.get_ypr(ypr);
+      ypr[0] = ypr[0] + M_PI;
+
       PRINTF("%f, %f, %f\n", ypr[0] * R2D, ypr[1] * R2D, ypr[2] * R2D);
     }
   }
