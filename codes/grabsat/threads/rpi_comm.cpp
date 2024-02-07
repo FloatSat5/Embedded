@@ -4,9 +4,12 @@
 #include <stdio.h>
 
 #define MAX_IDX_LENGTH 6
+#define INPUT_LENGTH_OFFSET 0
 
 HAL_UART rpi_uart(RPI_COMM_UART_IDX);
+rpi_data_t temp_rpi_data;
 rpi_data_t rpi_data;
+
 
 void RpiCommThread::init()
 {
@@ -15,6 +18,8 @@ void RpiCommThread::init()
 
 void RpiCommThread::run()
 {
+  init();
+
   while (1)
   {
     if (stop_flag)
@@ -22,12 +27,13 @@ void RpiCommThread::run()
       suspendCallerUntil(END_OF_TIME);
     }
 
-    uint8_t input_msg[50];
-    uint8_t msg_size = rpi_uart.read(input_msg, 15);
+    uint8_t input_msg[100];
+    uint8_t msg_size = rpi_uart.read(input_msg, sizeof(input_msg));
     input_msg[msg_size] = '\0';
 
     if (msg_size)
     {
+      PRINTF("\n%s\n", input_msg);
       bool status = parse(input_msg, msg_size);
       print(status);
     }
@@ -61,6 +67,14 @@ bool RpiCommThread::parse(const uint8_t *msg, int n)
 
     // Extract the value of command
     int flag = sscanf((char *)&msg[index + 1], "%f", &value);
+    index = index + 2;
+
+
+    while((msg[index] != ',') && (index < n))
+    {
+      index ++;
+    }
+    index++;
 
     // String is not valid float
     if (!flag)
@@ -68,7 +82,13 @@ bool RpiCommThread::parse(const uint8_t *msg, int n)
       return false;
     }
 
-    return populate_rpi_data(command, value);
+    populate_rpi_data(command, value);
+  }
+
+  if(temp_rpi_data.x == n - INPUT_LENGTH_OFFSET)
+  {
+    rpi_data = temp_rpi_data;
+    return true;
   }
 
   return false;
@@ -81,15 +101,19 @@ bool RpiCommThread::populate_rpi_data(const char *idx, const float value)
 
   if(!strcmp("dang", idx))
   {
-    rpi_data.del = value;
+    temp_rpi_data.del = value;
   }
   else if(!strcmp("dist", idx))
   {
-    rpi_data.dis = value;
+    temp_rpi_data.dis = value;
   }
   else if(!strcmp("scam", idx))
   {
-    rpi_data.psi = value;
+    temp_rpi_data.psi = value;
+  }
+  else if(!strcmp("x", idx))
+  {
+    temp_rpi_data.x = value;
   }
   else
   {
@@ -103,11 +127,11 @@ void RpiCommThread::print(bool parse_status)
 {
   if (parse_status)
   {
-    PRINTF("del: %f\370, dis: %f cm, psi: %d\370\n", rpi_data.del, rpi_data.dis, rpi_data.psi);
+    PRINTF("del: %f, dis: %f, psi: %d, x: %d\n", rpi_data.del, rpi_data.dis, rpi_data.psi, rpi_data.x);
   }
   else
   {
-    PRINTF("Invalid RPi data format!\n");
+    PRINTF("Valid RIP data format!\n");
   }
 }
 

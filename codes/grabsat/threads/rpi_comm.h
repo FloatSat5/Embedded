@@ -9,9 +9,10 @@
 
 struct rpi_data_t
 {
-  float del = RPI_COMM_INVALID_ANGLE; // Angular distance to debris, degrees
-  float dis = 0.0; // Camera to debris distance, cm
-  int psi = 0; // Star tracker angle, degrees
+  float del = RPI_COMM_INVALID; // Angular distance to debris, degrees
+  float dis = RPI_COMM_INVALID; // Camera to debris distance, cm
+  int psi = RPI_COMM_INVALID; // Star tracker angle, degrees
+  int x = 0; // Checksum
 };
 
 extern rpi_data_t rpi_data;
@@ -24,7 +25,7 @@ private:
   void print(bool parse_status);
 
 public:
-  bool stop_flag = true;
+  bool stop_flag = false;
 
   void run();
   void init();
