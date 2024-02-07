@@ -49,6 +49,7 @@ threads/groundstation.cpp \
 threads/arm.cpp \
 threads/topics.cpp \
 threads/control.cpp \
+threads/rpi_comm.cpp \
 threads/telemetry.cpp \
 threads/switch_board.cpp
 
