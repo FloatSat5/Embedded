@@ -15,6 +15,9 @@ void TelemetryThread::init()
 {
 }
 
+#define D2R 0.01745329251f
+#define R2D 57.2957795131f
+
 void TelemetryThread::run()
 {
   while (1)
@@ -52,6 +55,10 @@ void TelemetryThread::run()
     else if (current_mode == motor)
     {
       len = SNPRINTF(msg, sizeof(msg), "%f | %f\n", telecommands[mosav].value, telemetry_rx.w);
+    }
+    else if (current_mode == yaw)
+    {
+      len = SNPRINTF(msg, sizeof(msg), "%f, %f, %f\n", telemetry_rx.ypr[0] * R2D, telemetry_rx.ypr[1] * R2D, telemetry_rx.ypr[2] * R2D);
     }
     else
     {

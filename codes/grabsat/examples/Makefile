@@ -111,6 +111,7 @@ C_INCLUDES =  \
 -I"../libs/pid" \
 -I"../libs/madgwick" \
 -I"../libs/mahony" \
+-I"../libs/lanczos" \
 -I"../libs/encoder" \
 -I"../libs/rc_lpf" \
 -I"../libs/ft90mr"

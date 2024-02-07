@@ -3,6 +3,7 @@
 #include "rodos.h"
 #include "mahony.h"
 #include "lsm9ds1.h"
+#include "lanczos.h"
 #include "stm32f4xx.h"
 
 #include <math.h>
@@ -19,6 +20,8 @@ const float Ainv[3][3] = {{-0.001353, 0.004559, 0.032164},
                           {0.017233, 0.020416, -0.002169},
                           {-0.019714, 0.016308, -0.003140}};
 
+HAL_UART bluetooth(UART_IDX4);
+
 class HelloMahony : public StaticThread<>
 {
   void init()
@@ -31,12 +34,27 @@ class HelloMahony : public StaticThread<>
       }
     }
 
+    bluetooth.init(115200);
     filter.normalize_imu();
+  }
+
+  float get_yaw(float m[3], float ypr[3])
+  {
+    lnz::Euler ea321({0, ypr[1], ypr[2]});
+    lnz::Vector<3> mv({m[0], m[1], m[2]});
+    mv = trans(ea321.get_dcm()) * mv;
+
+    float yaw = atan2(-mv(1), mv(0));
+    if (yaw < 0)
+    {
+      yaw += 2 * M_PI;
+    }
+
+    return yaw;
   }
 
   void run()
   {
-    init();
     TIME_LOOP(NOW(), 15 * MILLISECONDS)
     {
       float a[3], g[3], m[3];
@@ -62,18 +80,16 @@ class HelloMahony : public StaticThread<>
 
       float ypr[3];
       filter.get_ypr(ypr);
-      ypr[0] = ypr[0] + M_PI;
+
+      float yaw = get_yaw(m, ypr);
 
       // PRINTF("%f, %f, %f\n", ypr[0] * R2D, ypr[1] * R2D, ypr[2] * R2D);
       // PRINTF("%f, %f, %f\n", m[0], m[1], m[2]);
 
-      float yaw = atan2(-m[1], m[0]);
-      if(yaw < 0)
-      {
-        yaw += 2 * M_PI;
-      }
-
+      char msg[50];
       PRINTF("%f, %f, %f\n", yaw * R2D, ypr[1] * R2D, ypr[2] * R2D);
+      int len = SNPRINTF(msg, sizeof(msg), "%f, %f, %f\n", yaw * R2D, ypr[1] * R2D, ypr[2] * R2D);
+      bluetooth.write(msg, len);
     }
   }
 } hello_madgwick;
