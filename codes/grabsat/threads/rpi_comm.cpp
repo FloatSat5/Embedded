@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "rpi_comm.h"
+#include "telecommand.h"
 
 #include <stdio.h>
 
@@ -125,14 +126,21 @@ bool RpiCommThread::populate_rpi_data(const char *idx, const float value)
 
 void RpiCommThread::print(bool parse_status)
 {
+  char send[100];
+  int len;
+
   if (parse_status)
   {
     PRINTF("del: %f, dis: %f, psi: %d, x: %d\n", rpi_data.del, rpi_data.dis, rpi_data.psi, rpi_data.x);
+    len = SNPRINTF(send, sizeof(send), "del: %f, dis: %f, psi: %d, x: %d\n", rpi_data.del, rpi_data.dis, rpi_data.psi, rpi_data.x);
   }
   else
   {
     PRINTF("Valid RIP data format!\n");
+    len = SNPRINTF(send, sizeof(send), "Valid RIP data format!\n");
   }
+
+  bluetooth.write(send, len);
 }
 
 RpiCommThread rpi_command_thread;
