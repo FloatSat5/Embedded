@@ -47,7 +47,7 @@ class HelloMahony : public StaticThread<>
         {
         }
       }
-
+/*
       g[0] = g[0] * D2R * 0.1;
       g[1] = g[1] * D2R * 0.1;
       g[2] = g[2] * D2R * 0.1;
@@ -63,6 +63,8 @@ class HelloMahony : public StaticThread<>
       ypr[0] = ypr[0] + M_PI;
 
       PRINTF("%f, %f, %f\n", ypr[0] * R2D, ypr[1] * R2D, ypr[2] * R2D);
+*/
+      PRINTF("%f, %f, %f\n", m[0], m[1], m[2]);
     }
   }
 } hello_madgwick;
