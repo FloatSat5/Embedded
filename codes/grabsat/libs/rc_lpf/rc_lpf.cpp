@@ -25,10 +25,10 @@ void rc_lpf::set_fc(const float fc)
   }
 }
 
-/*           __________________
-            |                  |
-  X(s) ---->| 1 / (1 * RC *s ) |----> Y(s)
-            |__________________|
+/*           _________________
+            |                 |
+  X(s) ---->| 1 / (1 + RC*s ) |----> Y(s)
+            |_________________|
 */
 float rc_lpf::update(const float x, const float dt)
 {
