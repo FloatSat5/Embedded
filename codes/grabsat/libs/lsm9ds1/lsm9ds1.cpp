@@ -194,3 +194,23 @@ float lsm9ds1_get_heading(const float m[3], const float a[3])
 
   return psi;
 }
+
+// m_hat = Ainv * (m - b)
+void magcal(float m[3], const float Ainv[3][3], const float b[3])
+{
+  float m_hat[3] = {0.0};
+
+  for (uint8_t r = 0; r < 3; r++)
+  {
+    float temp = 0.0;
+    for (uint8_t c = 0; c < 3; c++)
+    {
+      temp += Ainv[r][c] * (m[c] - b[c]);
+    }
+    m_hat[r] = temp;
+  }
+
+  m[0] = m_hat[0];
+  m[1] = m_hat[1];
+  m[2] = m_hat[2];
+}

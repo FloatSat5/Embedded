@@ -14,6 +14,11 @@ const float kp = 50;
 const float ki = 0;
 mahony filter(kp, ki);
 
+const float b[3] = {38.392299, 12.741417, 46.423205};
+const float Ainv[3][3] = {{-0.001353, 0.004559, 0.032164},
+                          {0.017233, 0.020416, -0.002169},
+                          {-0.019714, 0.016308, -0.003140}};
+
 class HelloMahony : public StaticThread<>
 {
   void init()
