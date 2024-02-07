@@ -47,7 +47,9 @@ class HelloMahony : public StaticThread<>
         {
         }
       }
-/*
+
+      // magcal(m, Ainv, b);
+
       g[0] = g[0] * D2R * 0.1;
       g[1] = g[1] * D2R * 0.1;
       g[2] = g[2] * D2R * 0.1;
@@ -62,9 +64,16 @@ class HelloMahony : public StaticThread<>
       filter.get_ypr(ypr);
       ypr[0] = ypr[0] + M_PI;
 
-      PRINTF("%f, %f, %f\n", ypr[0] * R2D, ypr[1] * R2D, ypr[2] * R2D);
-*/
-      PRINTF("%f, %f, %f\n", m[0], m[1], m[2]);
+      // PRINTF("%f, %f, %f\n", ypr[0] * R2D, ypr[1] * R2D, ypr[2] * R2D);
+      // PRINTF("%f, %f, %f\n", m[0], m[1], m[2]);
+
+      float yaw = atan2(-m[1], m[0]);
+      if(yaw < 0)
+      {
+        yaw += 2 * M_PI;
+      }
+
+      PRINTF("%f, %f, %f\n", yaw * R2D, ypr[1] * R2D, ypr[2] * R2D);
     }
   }
 } hello_madgwick;
