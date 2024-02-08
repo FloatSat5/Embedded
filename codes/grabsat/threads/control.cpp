@@ -31,7 +31,7 @@ float omega_control(const float dt)
   float g[3] = {0.0};
   lsm9ds1_read_gyro(g);
 
-  const float w = g[2] - 0.155;
+  const float w = g[2] + 0.612;
   const float w_sp = telecommands[sangv].value;
   const float w_err = w_sp - w;
 
@@ -69,17 +69,17 @@ float get_yaw(const float dt)
   lnz::Vector<3> mv({m[0], m[1], m[2]});
   mv = trans(ea321.get_dcm()) * mv;
 
-  float yaw = atan2(-mv(1), mv(0));
-  if (yaw < 0)
+  float psi = atan2(-mv(1), mv(0));
+  if (psi < 0)
   {
-    yaw += 2 * M_PI;
+    psi += 2 * M_PI;
   }
 
-  telemetry_tx.ypr[0] = yaw;
+  telemetry_tx.ypr[0] = psi;
   telemetry_tx.ypr[1] = ypr[1];
   telemetry_tx.ypr[2] = ypr[2];
 
-  return yaw;
+  return psi;
 }
 
 // Satellite yaw control outer loop
@@ -90,14 +90,18 @@ float position_control(const float dt)
   float y_err = y_sp - y;
 
   // Is it the shortest path?
-  if (y_err >= 180.0)
+  if (y_err >= M_PI)
   {
-    y_err -= 360.0;
+    y_err -= 2 * M_PI;
   }
-  else if (y_err < -180.0)
+  else if (y_err < -M_PI)
   {
-    y_err += 360.0;
+    y_err += 2 * M_PI;
   }
+  telemetry_tx.w = y_err * R2D;
+
+  // Update gains (if changed using telecommand)
+  y_pid.set_gains(telecommands[gkpsa].value, telecommands[gkisa].value, 0.0);
 
   return -y_pid.update(y_err, dt);
 }
@@ -110,8 +114,7 @@ float motor_control(const float m_sp, const float dt)
 
   // Update gains (if changed using telecommand)
   m_pid.set_gains(telecommands[gkpmw].value, telecommands[gkimw].value, 0.0);
-  PRINTF("%f\n", m_err);
-  telemetry_tx.w = m_w;
+  // telemetry_tx.w = m_w;
 
   return m_pid.update(m_err, dt);
 }
@@ -119,9 +122,9 @@ float motor_control(const float m_sp, const float dt)
 void ControlThread::init()
 {
   // PID configuration
-  m_pid.set_gains(telecommands[gkpmw].value, telecommands[gkimw].value, 0.0);
   m_pid.set_control_limits(0, PID_MOTOR_UMAX);
   w_pid.set_control_limits(0, PID_MOTOR_UMAX);
+  y_pid.set_control_limits(0, PID_MOTOR_UMAX);
 
   // Motor driver configuration
   rw.set_frequency(RW_PWM_FREQUENCY);
