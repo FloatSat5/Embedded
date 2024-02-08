@@ -58,7 +58,7 @@ void TelemetryThread::run()
     }
     else if (current_mode == yaw)
     {
-      len = SNPRINTF(msg, sizeof(msg), "%f, %f, %f\n", telemetry_rx.ypr[0] * R2D, telemetry_rx.ypr[1] * R2D, telemetry_rx.ypr[2] * R2D);
+      len = SNPRINTF(msg, sizeof(msg), "%f, %f, %f, %f\n", telecommands[sangp].value, telemetry_rx.ypr[0] * R2D, telemetry_rx.ypr[1] * R2D, telemetry_rx.ypr[2] * R2D);
     }
     else
     {

@@ -21,7 +21,7 @@ pid w_pid; // Satellite rate control
 pid y_pid; // Satellite yaw control
 Motor rw(RW_PWM1_IDX, RW_PWM2_IDX);
 
-const float kp = 50;
+const float kp = 30;
 const float ki = 0;
 mahony filter(kp, ki);
 

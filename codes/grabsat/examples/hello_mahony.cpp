@@ -11,7 +11,7 @@
 #define D2R 0.01745329251f
 #define R2D 57.2957795131f
 
-const float kp = 50;
+const float kp = 30;
 const float ki = 0;
 mahony filter(kp, ki);
 
@@ -26,16 +26,17 @@ class HelloMahony : public StaticThread<>
 {
   void init()
   {
+    bluetooth.init(115200);
+    filter.normalize_imu();
+
     if (!lsm9ds1_init())
     {
+      bluetooth.write("\nIMU error!\n", 13);
       PRINTF("\nIMU error!\n");
       while (1)
       {
       }
     }
-
-    bluetooth.init(115200);
-    filter.normalize_imu();
   }
 
   float get_yaw(float m[3], float ypr[3])
@@ -55,7 +56,7 @@ class HelloMahony : public StaticThread<>
 
   void run()
   {
-    TIME_LOOP(NOW(), 15 * MILLISECONDS)
+    TIME_LOOP(NOW(), 25 * MILLISECONDS)
     {
       float a[3], g[3], m[3];
 
@@ -75,7 +76,7 @@ class HelloMahony : public StaticThread<>
       g[0] = -g[0];
       a[0] = -a[0];
 
-      float dt = 15.0 / 1000.0;
+      float dt = 25.0 / 1000.0;
       filter.update(a, g, m, dt);
 
       float ypr[3];
