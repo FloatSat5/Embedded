@@ -1,6 +1,7 @@
 #include "arm.h"
 #include "utils.h"
 #include "magnet.h"
+#include "rpi_comm.h"
 #include "satellite.h"
 #include "multimeter.h"
 #include "telecommand.h"
@@ -130,6 +131,7 @@ void telecommand::execute(const telecommand_idx idx)
   case swoff:
   {
     current_mode = satellite_mode::idle;
+    rpi_command_thread.transmit(IDLE);
     break;
   }
 
@@ -137,6 +139,12 @@ void telecommand::execute(const telecommand_idx idx)
   {
     const bool magnet_state = utils::float_to_bool(telecommands[semag].value);
     magnet::actuate(magnet_state);
+    break;
+  }
+
+  case fideb:
+  {
+    rpi_command_thread.transmit(DEBRIS);
     break;
   }
 

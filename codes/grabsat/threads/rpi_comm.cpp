@@ -11,7 +11,6 @@ HAL_UART rpi_uart(RPI_COMM_UART_IDX);
 rpi_data_t temp_rpi_data;
 rpi_data_t rpi_data;
 
-
 void RpiCommThread::init()
 {
   rpi_uart.init(RPI_COMM_UART_BAUD);
@@ -43,6 +42,30 @@ void RpiCommThread::run()
   }
 }
 
+void RpiCommThread::transmit(rpi_mode rm)
+{
+  // Checksum is always 11
+  char rpi_msg[12] = "mode,_,x,11";
+
+  switch (rm)
+  {
+  case DEBRIS:
+    rpi_msg[5] = '1';
+    break;
+
+  case STAR_TRACKER:
+    rpi_msg[5] = '2';
+    break;
+
+  case IDLE:
+    rpi_msg[5] = '3';
+    break;
+
+  default:
+    break;
+  }
+}
+
 bool RpiCommThread::parse(const uint8_t *msg, int n)
 {
 
@@ -70,10 +93,9 @@ bool RpiCommThread::parse(const uint8_t *msg, int n)
     int flag = sscanf((char *)&msg[index + 1], "%f", &value);
     index = index + 2;
 
-
-    while((msg[index] != ',') && (index < n))
+    while ((msg[index] != ',') && (index < n))
     {
-      index ++;
+      index++;
     }
     index++;
 
@@ -86,7 +108,7 @@ bool RpiCommThread::parse(const uint8_t *msg, int n)
     populate_rpi_data(command, value);
   }
 
-  if(temp_rpi_data.x == n - INPUT_LENGTH_OFFSET)
+  if (temp_rpi_data.x == n - INPUT_LENGTH_OFFSET)
   {
     rpi_data = temp_rpi_data;
     return true;
@@ -100,19 +122,19 @@ bool RpiCommThread::populate_rpi_data(const char *idx, const float value)
 {
   bool output = true;
 
-  if(!strcmp("dang", idx))
+  if (!strcmp("dang", idx))
   {
     temp_rpi_data.del = value;
   }
-  else if(!strcmp("dist", idx))
+  else if (!strcmp("dist", idx))
   {
     temp_rpi_data.dis = value;
   }
-  else if(!strcmp("scam", idx))
+  else if (!strcmp("scam", idx))
   {
     temp_rpi_data.psi = value;
   }
-  else if(!strcmp("x", idx))
+  else if (!strcmp("x", idx))
   {
     temp_rpi_data.x = value;
   }

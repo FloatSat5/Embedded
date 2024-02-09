@@ -15,17 +15,25 @@ struct rpi_data_t
   int x = 0; // Checksum
 };
 
+enum rpi_mode
+{
+  STAR_TRACKER = 2,
+  DEBRIS = 1,
+  IDLE = 3
+};
+
 extern rpi_data_t rpi_data;
 
 class RpiCommThread : public StaticThread<>
 {
 private:
+  void print(bool parse_status);
   bool parse(const uint8_t *msg, int n);
   bool populate_rpi_data(const char *idx, const float value);
-  void print(bool parse_status);
 
 public:
   bool stop_flag = false;
+  void transmit(rpi_mode rm);
 
   void run();
   void init();
