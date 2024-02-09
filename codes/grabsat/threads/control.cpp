@@ -98,6 +98,7 @@ float position_control(const float dt)
   {
     y_err += 2 * 180;
   }
+  y_err = 360 - y_err;
 
   // Update gains (if changed using telecommand)
   y_pid.set_gains(telecommands[gkpsa].value, telecommands[gkisa].value, 0.0);
