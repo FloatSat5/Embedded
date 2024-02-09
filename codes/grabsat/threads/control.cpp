@@ -76,7 +76,7 @@ float get_yaw(const float dt)
   }
 
   telemetry_tx.ypr[0] = psi;
-  telemetry_tx.ypr[1] = ypr[1];
+  // telemetry_tx.ypr[1] = ypr[1];
   telemetry_tx.ypr[2] = ypr[2];
 
   return psi;
@@ -99,7 +99,7 @@ float position_control(const float dt)
     y_err += 2 * 180;
   }
   y_err = - y_err;
-  telemetry_tx.w = y_err;
+  telemetry_tx.ypr[1] = y_err;
 
   // Update gains (if changed using telecommand)
   y_pid.set_gains(telecommands[gkpsa].value, telecommands[gkisa].value, 0.0);
@@ -115,7 +115,7 @@ float motor_control(const float m_sp, const float dt)
 
   // Update gains (if changed using telecommand)
   m_pid.set_gains(telecommands[gkpmw].value, telecommands[gkimw].value, 0.0);
-  // telemetry_tx.w = m_sp;
+  telemetry_tx.w = m_sp;
 
   return m_pid.update(m_err, dt);
 }

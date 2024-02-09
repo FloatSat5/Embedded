@@ -38,7 +38,7 @@
 #define MULTIMETER_MAX_ADC 4096.0
 
 // Groundstation
-#define GROUNDSTATION_UART_IDX UART_IDX4
+#define GROUNDSTATION_UART_IDX UART_IDX3
 #define GROUNDSTATION_UART_BAUD 115200
 
 // Raspberry Pi communication
