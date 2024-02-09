@@ -85,20 +85,19 @@ float get_yaw(const float dt)
 // Satellite yaw control outer loop
 float position_control(const float dt)
 {
-  const float y = get_yaw(dt);
-  const float y_sp = telecommands[sangp].value * D2R;
+  const float y = get_yaw(dt) * R2D;
+  const float y_sp = telecommands[sangp].value;
   float y_err = y_sp - y;
 
   // Is it the shortest path?
-  if (y_err >= M_PI)
+  if (y_err >= 360)
   {
-    y_err -= 2 * M_PI;
+    y_err -= 2 * 180;
   }
-  else if (y_err < -M_PI)
+  else if (y_err < -180)
   {
-    y_err += 2 * M_PI;
+    y_err += 2 * 180;
   }
-  telemetry_tx.w = y_err * R2D;
 
   // Update gains (if changed using telecommand)
   y_pid.set_gains(telecommands[gkpsa].value, telecommands[gkisa].value, 0.0);
@@ -114,7 +113,7 @@ float motor_control(const float m_sp, const float dt)
 
   // Update gains (if changed using telecommand)
   m_pid.set_gains(telecommands[gkpmw].value, telecommands[gkimw].value, 0.0);
-  // telemetry_tx.w = m_w;
+  telemetry_tx.w = m_sp;
 
   return m_pid.update(m_err, dt);
 }
