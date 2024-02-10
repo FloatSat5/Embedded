@@ -41,6 +41,7 @@ libs/rc_lpf/rc_lpf.cpp \
 libs/lsm9ds1/lsm9ds1.cpp \
 libs/encoder/encoder.cpp \
 libs/madgwick/madgwick.cpp \
+libs/mahony/mahony.cpp \
 satellite/magnet.cpp \
 satellite/satellite.cpp \
 satellite/multimeter.cpp \
@@ -120,6 +121,8 @@ C_INCLUDES =  \
 -I"libs/motor" \
 -I"libs/pid" \
 -I"libs/encoder" \
+-I"libs/lanczos" \
+-I"libs/mahony" \
 -I"libs/madgwick" \
 -I"libs/rc_lpf" \
 -I"libs/ft90mr" \

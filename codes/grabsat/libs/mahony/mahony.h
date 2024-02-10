@@ -10,12 +10,13 @@ class mahony
 private:
   bool norm_flag = false; // Normalize sensors?
   float kp = 0.0, ki = 0.0; // Feedback control gains
-  float q[4] = {1.0, 0.0, 0.0, 0.0}; // Rotation quaternion
   float error_sum[3] = {0.0, 0.0, 0.0}; // Integrator memory
 
 public:
   mahony();
   mahony(const float kp, const float ki);
+
+  float q[4] = {1.0, 0.0, 0.0, 0.0}; // Rotation quaternion
 
   void normalize_imu(void);
   void get_ypr(float ypr[3]);

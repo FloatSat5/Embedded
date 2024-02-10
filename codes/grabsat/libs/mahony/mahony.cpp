@@ -88,9 +88,9 @@ void mahony::update(float a[3], float g[3], float m[3], float dt)
   error[2] = (a[0] * ab[1] - a[1] * ab[0]) + (m[0] * mb[1] - m[1] * mb[0]);
 
   // Integral controller
-  error_sum[0] += error[0];
-  error_sum[1] += error[1];
-  error_sum[2] += error[2];
+  error_sum[0] += error[0] * dt;
+  error_sum[1] += error[1] * dt;
+  error_sum[2] += error[2] * dt;
 
   // Gyro correction using PI compensation
   g[0] += kp * error[0] + ki * error_sum[0];
