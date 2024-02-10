@@ -14,7 +14,7 @@
 // Reaction wheel
 #define RW_PWM1_IDX PWM_IDX02 // PE13
 #define RW_PWM2_IDX PWM_IDX03 // PE14
-#define RW_PWM_FREQUENCY 2000 // Hz
+#define RW_PWM_FREQUENCY 5000 // Hz
 #define RW_PWM_INCREMENTS 1000
 
 // Encoder
@@ -38,7 +38,7 @@
 #define MULTIMETER_MAX_ADC 4096.0
 
 // Groundstation
-#define GROUNDSTATION_UART_IDX UART_IDX3
+#define GROUNDSTATION_UART_IDX UART_IDX4
 #define GROUNDSTATION_UART_BAUD 115200
 
 // Raspberry Pi communication
@@ -58,6 +58,9 @@
 
 /*
   PID control gains
+
+  Observations:
+    1. Relatively larger I compared to P creates ramping effect with less overshoot.
 */
 
 // Motor angular rate
@@ -67,8 +70,8 @@
 #define PID_MOTOR_UMIN -100.0
 
 // Satellite angular
-#define PID_OMEGA_KP 0.5
-#define PID_OMEGA_KI 1
+#define PID_OMEGA_KP 0.2
+#define PID_OMEGA_KI 2
 
 // Satellite angle
 #define PID_YAW_KP 0.0

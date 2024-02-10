@@ -103,7 +103,8 @@ float position_control(const float dt)
   telemetry_tx.ypr[1] = y_err;
 
   // Update gains (if changed using telecommand)
-  y_pid.set_gains(telecommands[gkpsa].value, telecommands[gkisa].value, 0.0);
+  y_pid.set_kp(telecommands[gkpsa].value);
+  y_pid.set_ki(telecommands[gkisa].value);
 
   return -y_pid.update(y_err, dt);
 }
@@ -128,6 +129,7 @@ void ControlThread::init()
   // PID configuration
   m_pid.set_control_limits(PID_MOTOR_UMIN, PID_MOTOR_UMAX);
   w_pid.set_control_limits(PID_MOTOR_UMIN, PID_MOTOR_UMAX);
+  y_pid.set_control_limits(PID_MOTOR_UMIN, PID_MOTOR_UMAX);
 
   // Motor driver configuration
   rw.set_frequency(RW_PWM_FREQUENCY);
