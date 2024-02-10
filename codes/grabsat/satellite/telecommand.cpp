@@ -29,6 +29,7 @@ telecommands_t telecommands[] =
   {"gkimw", PID_MOTOR_KI},
   {"gkpsa", PID_YAW_KP},
   {"gkisa", PID_YAW_KI},
+  {"gkdsa", PID_YAW_KD},
   {"gkpsw", PID_OMEGA_KP},
   {"gkisw", PID_OMEGA_KI}
 };

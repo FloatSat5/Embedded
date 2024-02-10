@@ -30,6 +30,7 @@ enum telecommand_idx
   gkimw, // Set Ki for motor angular velocity [float]
   gkpsa, // Set Kp for sat angle [float]
   gkisa, // Set Ki for sat angle [float]
+  gkdsa, // Set Kd for sat angle [float]
   gkpsw, // Set Kp for sat angular velocity [float]
   gkisw, // Set Ki for sat angular velocity [float]
 

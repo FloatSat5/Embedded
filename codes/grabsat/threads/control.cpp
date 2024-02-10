@@ -105,8 +105,9 @@ float position_control(const float dt)
   // Update gains (if changed using telecommand)
   y_pid.set_kp(telecommands[gkpsa].value);
   y_pid.set_ki(telecommands[gkisa].value);
+  y_pid.set_kd(telecommands[gkdsa].value);
 
-  return -y_pid.update(y_err, dt);
+  return y_pid.update(y_err, dt);
 }
 
 // Motor omega control inner loop
@@ -128,8 +129,8 @@ void ControlThread::init()
 {
   // PID configuration
   m_pid.set_control_limits(PID_MOTOR_UMIN, PID_MOTOR_UMAX);
-  w_pid.set_control_limits(PID_MOTOR_UMIN, PID_MOTOR_UMAX);
-  y_pid.set_control_limits(PID_MOTOR_UMIN, PID_MOTOR_UMAX);
+  w_pid.set_control_limits(PID_OMEGA_UMIN, PID_OMEGA_UMAX);
+  y_pid.set_control_limits(PID_OMEGA_UMIN, PID_OMEGA_UMAX);
 
   // Motor driver configuration
   rw.set_frequency(RW_PWM_FREQUENCY);
