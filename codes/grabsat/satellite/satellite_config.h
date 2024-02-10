@@ -61,8 +61,8 @@
 #define PID_MOTOR_UMIN -100.0
 
 // Satellite angular
-#define PID_OMEGA_KP 1.0
-#define PID_OMEGA_KI 0.5
+#define PID_OMEGA_KP 0.5
+#define PID_OMEGA_KI 1
 
 // Satellite angle
 #define PID_YAW_KP 0.0

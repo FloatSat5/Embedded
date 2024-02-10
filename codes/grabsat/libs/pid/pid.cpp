@@ -58,6 +58,7 @@ float pid::update(float e, float dt)
   }
 
   const float u = p + i + d;
+  ez = e;
 
   return saturate_control(u);
 }

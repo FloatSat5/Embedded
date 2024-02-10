@@ -22,7 +22,7 @@ float omega_control(const float dt)
   float g[3] = {0.0};
   lsm9ds1_read_gyro(g);
 
-  const float w = g[2]-0.155;
+  const float w = g[2] + 0.667;
   const float w_sp = telecommands[sangv].value;
   const float w_err = w_sp - w;
 
