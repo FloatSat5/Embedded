@@ -6,13 +6,16 @@
 ft90mr magnet_arm(SERVO_ARM_PWM_IDX);
 ft90mr balance_arm(SERVO_BALANCE_PWM_IDX);
 
-HAL_GPIO pin_green_led(GPIO_060);
-HAL_GPIO pin_orange_led(GPIO_061);
+HAL_GPIO magnet_switch(SERVO_ARM_GPIO);
+HAL_GPIO balance_switch(SERVO_BALANCE_GPIO);
 
 void ArmThread::init()
 {
-  pin_green_led.init(true, 1, 0);
-  pin_orange_led.init(true, 1, 0);
+  magnet_switch.init(false, 1, 0);
+  balance_switch.init(false, 1, 0);
+
+  balance_switch.config(GPIO_CFG_PULLUP_ENABLE, 1);
+  magnet_switch.config(GPIO_CFG_PULLUP_ENABLE, 1);
 }
 
 void ArmThread::run()
@@ -21,30 +24,47 @@ void ArmThread::run()
   {
     if (stop_flag)
     {
-      pin_green_led.setPins(0);
-      pin_orange_led.setPins(0);
-
       magnet_arm.run(0);
       balance_arm.run(0);
-
       suspendCallerUntil(END_OF_TIME);
     }
 
+    int dir = 0;
     if (dir_flag) // extend
     {
-      pin_orange_led.setPins(1);
-      magnet_arm.run(SERVO_ARM_SPEED);
-      balance_arm.run(SERVO_ARM_SPEED);
+      dir = -1;
     }
     else // retract
     {
-      pin_green_led.setPins(1);
-      magnet_arm.run(-SERVO_ARM_SPEED);
-      balance_arm.run(-SERVO_ARM_SPEED);
+      dir = 1;
     }
+
+    magnet_arm.run(dir * SERVO_ARM_SPEED);
+    balance_arm.run(dir * SERVO_ARM_SPEED);
 
     stop_flag = true; // Stop after one execution
     suspendCallerUntil(NOW() + period * MILLISECONDS);
+  }
+}
+
+void ArmThread::check_limits()
+{
+  // Turn off magnet arm
+  if (magnet_switch.readPins())
+  {
+    magnet_arm.run(0);
+  }
+
+  // Turn off balance arm
+  if (balance_switch.readPins())
+  {
+    balance_arm.run(0);
+  }
+
+  // Stop thread
+  if (magnet_switch.readPins() && magnet_switch.readPins())
+  {
+    stop_flag = true;
   }
 }
 

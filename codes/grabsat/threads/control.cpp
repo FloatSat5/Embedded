@@ -31,12 +31,13 @@ float omega_control(const float dt)
   float g[3] = {0.0};
   lsm9ds1_read_gyro(g);
 
-  const float w = g[2] + 0.612;
+  const float w = g[2] + 0.667;
   const float w_sp = telecommands[sangv].value;
   const float w_err = w_sp - w;
 
   // Update gains (if changed using telecommand)
-  w_pid.set_gains(telecommands[gkpsw].value, telecommands[gkisw].value, 0.0);
+  w_pid.set_kp(telecommands[gkpsw].value);
+  w_pid.set_ki(telecommands[gkisw].value);
 
   float sp = -w_pid.update(w_err, dt);
 
@@ -114,8 +115,10 @@ float motor_control(const float m_sp, const float dt)
   const float m_err = m_sp - m_w;
 
   // Update gains (if changed using telecommand)
-  m_pid.set_gains(telecommands[gkpmw].value, telecommands[gkimw].value, 0.0);
-  telemetry_tx.w = m_sp;
+  m_pid.set_kp(telecommands[gkpmw].value);
+  m_pid.set_ki(telecommands[gkimw].value);
+  telemetry_tx.w = m_w;
+
 
   return m_pid.update(m_err, dt);
 }
@@ -123,9 +126,8 @@ float motor_control(const float m_sp, const float dt)
 void ControlThread::init()
 {
   // PID configuration
-  m_pid.set_control_limits(0, PID_MOTOR_UMAX);
-  w_pid.set_control_limits(0, PID_MOTOR_UMAX);
-  y_pid.set_control_limits(0, PID_MOTOR_UMAX);
+  m_pid.set_control_limits(PID_MOTOR_UMIN, PID_MOTOR_UMAX);
+  w_pid.set_control_limits(PID_MOTOR_UMIN, PID_MOTOR_UMAX);
 
   // Motor driver configuration
   rw.set_frequency(RW_PWM_FREQUENCY);
