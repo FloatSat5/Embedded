@@ -14,7 +14,7 @@
 // Reaction wheel
 #define RW_PWM1_IDX PWM_IDX02 // PE13
 #define RW_PWM2_IDX PWM_IDX03 // PE14
-#define RW_PWM_FREQUENCY 2000 // Hz
+#define RW_PWM_FREQUENCY 5000 // Hz
 #define RW_PWM_INCREMENTS 1000
 
 // Encoder
@@ -41,6 +41,11 @@
 #define GROUNDSTATION_UART_IDX UART_IDX4
 #define GROUNDSTATION_UART_BAUD 115200
 
+// Raspberry Pi communication
+#define RPI_COMM_UART_IDX UART_IDX6 // Tx: PC6, Rx:PC7
+#define RPI_COMM_UART_BAUD 115200
+#define RPI_COMM_INVALID 555
+
 /*
   THREAD CONFIGURATIONS
 */
@@ -49,23 +54,30 @@
 #define PERIOD_GROUNDSTATION 50
 #define PERIOD_MOTOR_CONTROL 25
 #define PERIOD_TELEMETRY_CONTROL 100
+#define PERIOD_RPI_COMM 50
 
 /*
   PID control gains
+
+  Observations:
+    1. Relatively larger I compared to P creates ramping effect with less overshoot.
 */
 
 // Motor angular rate
 #define PID_MOTOR_KP 5
 #define PID_MOTOR_KI 0.2
-#define PID_MOTOR_UMAX 100.0
+#define PID_MOTOR_UMAX 100.0 // PWM limits
 #define PID_MOTOR_UMIN -100.0
 
 // Satellite angular
-#define PID_OMEGA_KP 0.5
-#define PID_OMEGA_KI 1
+#define PID_OMEGA_KP 0.2
+#define PID_OMEGA_KI 2
+#define PID_OMEGA_UMAX 90.0 // Motor omega limits
+#define PID_OMEGA_UMIN -90.0
 
 // Satellite angle
-#define PID_YAW_KP 0.0
-#define PID_YAW_KI 0.0
+#define PID_YAW_KP 1.0
+#define PID_YAW_KI 0.2
+#define PID_YAW_KD 0.0
 
 #endif // satellite_config.h

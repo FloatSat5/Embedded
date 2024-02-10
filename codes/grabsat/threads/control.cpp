@@ -2,12 +2,17 @@
 #include "motor.h"
 #include "topics.h"
 #include "encoder.h"
+#include "lanczos.h"
 #include "lsm9ds1.h"
+#include "mahony.h"
 #include "control.h"
 #include "satellite.h"
 #include "telecommand.h"
 #include "multimeter.h"
 #include "satellite_config.h"
+
+#define D2R 0.01745329251f
+#define R2D 57.2957795131f
 
 telemetry_struct telemetry_tx;
 
@@ -15,6 +20,10 @@ pid m_pid; // Motor rate control
 pid w_pid; // Satellite rate control
 pid y_pid; // Satellite yaw control
 Motor rw(RW_PWM1_IDX, RW_PWM2_IDX);
+
+const float kp = 30;
+const float ki = 0;
+mahony filter(kp, ki);
 
 // Satellite angular rate control outer loop
 float omega_control(const float dt)
@@ -39,12 +48,64 @@ float omega_control(const float dt)
   return sp;
 }
 
+float get_yaw(const float dt)
+{
+  float a[3], g[3], m[3];
+  lsm9ds1_read_accel(a);
+  lsm9ds1_read_gyro(g);
+  lsm9ds1_read_mag(m);
+
+  g[0] = g[0] * D2R * 0.1;
+  g[1] = g[1] * D2R * 0.1;
+  g[2] = g[2] * D2R * 0.1;
+
+  g[0] = -g[0];
+  a[0] = -a[0];
+
+  float ypr[3];
+  filter.update(a, g, m, dt);
+  filter.get_ypr(ypr);
+
+  lnz::Euler ea321({0, ypr[1], ypr[2]});
+  lnz::Vector<3> mv({m[0], m[1], m[2]});
+  mv = trans(ea321.get_dcm()) * mv;
+
+  float psi = atan2(-mv(1), mv(0));
+  if (psi < 0)
+  {
+    psi += 2 * M_PI;
+  }
+
+  telemetry_tx.ypr[0] = psi;
+  // telemetry_tx.ypr[1] = ypr[1];
+  telemetry_tx.ypr[2] = ypr[2];
+
+  return psi;
+}
+
 // Satellite yaw control outer loop
 float position_control(const float dt)
 {
-  const float y = 0.0;
+  const float y = get_yaw(dt) * R2D;
   const float y_sp = telecommands[sangp].value;
-  const float y_err = y_sp - y;
+  float y_err = y_sp - y;
+
+  // Is it the shortest path?
+  if (y_err >= 360)
+  {
+    y_err -= 2 * 180;
+  }
+  else if (y_err < -180)
+  {
+    y_err += 2 * 180;
+  }
+  y_err = - y_err;
+  telemetry_tx.ypr[1] = y_err;
+
+  // Update gains (if changed using telecommand)
+  y_pid.set_kp(telecommands[gkpsa].value);
+  y_pid.set_ki(telecommands[gkisa].value);
+  y_pid.set_kd(telecommands[gkdsa].value);
 
   return y_pid.update(y_err, dt);
 }
@@ -60,6 +121,7 @@ float motor_control(const float m_sp, const float dt)
   m_pid.set_ki(telecommands[gkimw].value);
   telemetry_tx.w = m_w;
 
+
   return m_pid.update(m_err, dt);
 }
 
@@ -67,7 +129,8 @@ void ControlThread::init()
 {
   // PID configuration
   m_pid.set_control_limits(PID_MOTOR_UMIN, PID_MOTOR_UMAX);
-  w_pid.set_control_limits(PID_MOTOR_UMIN, PID_MOTOR_UMAX);
+  w_pid.set_control_limits(PID_OMEGA_UMIN, PID_OMEGA_UMAX);
+  y_pid.set_control_limits(PID_OMEGA_UMIN, PID_OMEGA_UMAX);
 
   // Motor driver configuration
   rw.set_frequency(RW_PWM_FREQUENCY);
@@ -82,6 +145,8 @@ void ControlThread::init()
 
   // IMU init
   lsm9ds1_init();
+
+  filter.normalize_imu();
 }
 
 // Performs one of three control actions

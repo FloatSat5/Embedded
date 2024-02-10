@@ -13,4 +13,6 @@ float lsm9ds1_get_roll(const float a[3]);
 float lsm9ds1_get_pitch(const float a[3]);
 float lsm9ds1_get_heading(const float m[3], const float a[3]);
 
+void magcal(float m[3], const float Ainv[3][3], const float b[3]);
+
 #endif // lsm9ds1.h
