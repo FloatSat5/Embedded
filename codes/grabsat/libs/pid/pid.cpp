@@ -11,26 +11,21 @@ pid::~pid()
 void pid::reset_memory(void)
 {
   ez = 0.0;
-  e2z = 0.0;
-  u2z = 0.0;
+  iz = 0.0;
+  dz = 0.0;
 }
 
-inline int sign(const float x)
-{
-  return (x > 0.0) - (x < 0.0);
-}
-
-float pid::saturate_control(const double in)
+float pid::saturate_control(const float in)
 {
   float out = in;
 
-  if (abs(in) < u_min)
+  if (in < u_min)
   {
-    out = sign(in) * u_min;
+    out = u_min;
   }
-  else if (abs(in) > u_max)
+  else if (in > u_max)
   {
-    out = sign(in) * u_max;
+    out = u_max;
   }
 
   return out;
@@ -41,32 +36,55 @@ float pid::saturate_control(const double in)
   E(s) ---->| kp + ki / s + kd * s |----> U(s)
             |______________________|
 */
-float pid::update(double e, double dt)
+float pid::update(float e, float dt)
 {
-  const float e_coeff = kp + 0.5 * dt * ki + 2 * kd / dt;
-  const float ez_coeff = dt * ki - 4.0 * kd / dt;
-  const float e2z_coeff = -kp + 0.5 * dt * ki + 2.0 * kd / dt;
+  float p = 0.0, i = 0.0, d = 0.0;
 
-  float u = u2z + e_coeff * e + ez_coeff * ez + e2z_coeff * e2z;
+  if (is_p)
+  {
+    p = kp * e;
+  }
 
-  ez = e;
-  e2z = ez;
-  uz = u;
-  u2z = uz;
+  if (is_i)
+  {
+    i = iz + 0.5 * ki * dt * (e + ez);
+    iz = i;
+  }
 
-  return u;
+  if (is_d)
+  {
+    d = -dz + 2 * kd * (e - ez) / dt;
+    dz = d;
+  }
+
+  const float u = p + i + d;
+
+  return saturate_control(u);
 }
 
-void pid::set_gains(const double p, const double i, const double d)
+void pid::set_kp(const float p)
 {
   kp = p;
-  ki = i;
-  kd = d;
+  is_p = true;
 }
 
-// Sign agnostic magnitude limits
-void pid::set_control_limits(const double min, const double max)
+void pid::set_ki(const float i)
 {
-  u_min = abs(min);
-  u_max = abs(max);
+  ki = i;
+  is_i = true;
+}
+
+void pid::set_kd(const float d)
+{
+  kd = d;
+  is_d = true;
+}
+
+void pid::set_control_limits(const float min, const float max)
+{
+  if (min < max)
+  {
+    u_min = min;
+    u_max = max;
+  }
 }
