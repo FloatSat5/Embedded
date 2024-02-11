@@ -49,6 +49,8 @@ void ArmThread::run()
 
 void ArmThread::check_limits()
 {
+  if(dir_flag) // allow extend even when switch is pressed
+    return;
   // Turn off magnet arm
   if (magnet_switch.readPins())
   {
