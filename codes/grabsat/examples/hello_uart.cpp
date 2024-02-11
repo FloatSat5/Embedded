@@ -9,14 +9,13 @@
 uint32_t baudrate = 115200;
 
 // IDX3 is default UART used by RODOS
-HAL_UART pi(UART_IDX6); // tx: PC10, rx: PC11
-// HAL_UART pi(UART_IDX3); // tx: PD8, rx: PD9
+HAL_UART pi(UART_IDX6); // tx: PC6, rx: PC7
 
 int star_camera_angle = 0;
 float angle_to_debris = 0;
 float distance_to_debris = 0;
 
-char msg[] = "Hello";
+char msg[] = "mode,3,x,11";
 uint16_t counter;
 
 class Hello_Uart : public StaticThread<>
@@ -30,7 +29,7 @@ class Hello_Uart : public StaticThread<>
   {
     void init();
 
-    TIME_LOOP(NOW(), 50 * MILLISECONDS)
+    TIME_LOOP(NOW(), 200 * MILLISECONDS)
     {
       uint8_t pi_msg[50];
       uint8_t msg_size = pi.read(pi_msg, sizeof(pi_msg)); // -> should look like (dang122.444dist13.2412412scam180x20)
@@ -55,6 +54,7 @@ class Hello_Uart : public StaticThread<>
       {
         checksum *= 10;
         checksum += (int)pi_msg[i];
+        PRINTF("checksum char %d", (int)pi_msg[i]);
       }
 
       PRINTF("checksum = %d\n", checksum);
@@ -97,7 +97,7 @@ class Hello_Uart : public StaticThread<>
         decimal = false;
         decimal_multiplier = 0.1;
 
-        // get the distance to the debris TODO
+        // get the distance to the debris 
         for (int i = end_of_angle + 4; !isdigit(pi_msg[i]) && pi_msg[i] == '.'; i++)
         {
           // get the moment where it is decimal
@@ -132,24 +132,24 @@ class Hello_Uart : public StaticThread<>
 
         PRINTF("distance to debris = %d\n", star_camera_angle);
 
-        //add end of array
-        pi_msg[msg_size] = '\0';
-
-        // Read out pi_msg msg -> should look like (dang122.444dist13.2412412scam180x20)
-        if (msg_size)
-        {
-          PRINTF("got message :");
-          for (uint8_t i = 0; i <= msg_size; i++)
-          {
-            PRINTF("%c", pi_msg[i]);
-          }
-          PRINTF("\n");
-        }
-
       }
       else
       {
         PRINTF("recieved message is");
+      }
+
+      //add end of array
+      pi_msg[msg_size] = '\0';
+
+      // Read out pi_msg msg -> should look like (dang122.444dist13.2412412scam180x20)
+      if (msg_size)
+      {
+        PRINTF("got message :");
+        for (uint8_t i = 0; i <= msg_size; i++)
+        {
+          PRINTF("%c", pi_msg[i]);
+        }
+        PRINTF("\n");
       }
 
       pi.write(msg, sizeof(msg));
