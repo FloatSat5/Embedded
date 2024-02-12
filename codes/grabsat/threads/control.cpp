@@ -91,7 +91,7 @@ float position_control(const float dt)
   float y_err = y_sp - y;
 
   // Is it the shortest path?
-  if (y_err >= 360)
+  if (y_err >= 180)
   {
     y_err -= 2 * 180;
   }
