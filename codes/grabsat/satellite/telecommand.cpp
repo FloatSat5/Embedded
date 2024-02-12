@@ -1,6 +1,7 @@
 #include "arm.h"
 #include "utils.h"
 #include "magnet.h"
+#include "encoder.h"
 #include "satellite.h"
 #include "multimeter.h"
 #include "telecommand.h"
@@ -95,18 +96,21 @@ void telecommand::execute(const telecommand_idx idx)
   case mosav:
   {
     current_mode = satellite_mode::motor;
+    encoder::reset_count();
     break;
   }
 
   case sangp:
   {
     current_mode = satellite_mode::yaw;
+    encoder::reset_count();
     break;
   }
 
   case sangv:
   {
     current_mode = satellite_mode::omega;
+    encoder::reset_count();
     break;
   }
 

@@ -54,7 +54,11 @@ void TelemetryThread::run()
     }
     else if (current_mode == motor)
     {
-      len = SNPRINTF(msg, sizeof(msg), "%f | %f\n", telecommands[mosav].value, telemetry_rx.w);
+      len = SNPRINTF(msg, sizeof(msg), "%f | %f | %f | %f\n",
+                     telecommands[mosav].value,  // set-point
+                     telemetry_rx.w,             // feedback
+                     telecommands[gkpmw].value,  // kp
+                     telecommands[gkimw].value); // ki
     }
     else if (current_mode == yaw)
     {
@@ -64,7 +68,7 @@ void TelemetryThread::run()
                      telemetry_rx.ypr[1],        // error
                      telemetry_rx.w,             // motor-omega
                      telecommands[gkpsa].value,  // kp
-                     telecommands[gkisa].value, // ki
+                     telecommands[gkisa].value,  // ki
                      telecommands[gkdsa].value); // kd
     }
     else
