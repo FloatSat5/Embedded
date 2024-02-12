@@ -76,8 +76,8 @@
 #define PID_OMEGA_UMIN -90.0
 
 // Satellite angle
-#define PID_YAW_KP 0.22
-#define PID_YAW_KI 0.022
+#define PID_YAW_KP 1.0
+#define PID_YAW_KI 0.2
 #define PID_YAW_KD 0.0
 
 #endif // satellite_config.h
