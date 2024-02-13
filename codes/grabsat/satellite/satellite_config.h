@@ -9,7 +9,7 @@
 */
 
 // me: 1, team:2
-#define WHO_IS_USER 1 
+#define WHO_IS_USER 1
 
 // Telemetry buffer length
 #define BLUETOOTH_BUFFER_LEN 200
@@ -73,8 +73,8 @@
 #define PID_MOTOR_UMIN -100.0
 
 // Satellite angular
-#define PID_OMEGA_KP 0.2
-#define PID_OMEGA_KI 2
+#define PID_OMEGA_KP 0.1
+#define PID_OMEGA_KI 0.4
 #define PID_OMEGA_UMAX 90.0 // Motor omega limits
 #define PID_OMEGA_UMIN -90.0
 
