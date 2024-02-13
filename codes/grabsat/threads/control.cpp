@@ -99,7 +99,7 @@ float position_control(const float dt)
   {
     y_err += 2 * 180;
   }
-  y_err = - y_err;
+  y_err = -y_err;
   telemetry_tx.ypr[1] = y_err;
 
   // Update gains (if changed using telecommand)
@@ -121,8 +121,38 @@ float motor_control(const float m_sp, const float dt)
   m_pid.set_ki(telecommands[gkimw].value);
   telemetry_tx.w = m_w;
 
-
   return m_pid.update(m_err, dt);
+}
+
+void get_ypr(const float dt, float ypr[3])
+{
+  float a[3], g[3], m[3];
+  lsm9ds1_read_accel(a);
+  lsm9ds1_read_gyro(g);
+  lsm9ds1_read_mag(m);
+
+  g[0] = g[0] * D2R * 0.1;
+  g[1] = g[1] * D2R * 0.1;
+  g[2] = g[2] * D2R * 0.1;
+
+  g[0] = -g[0];
+  a[0] = -a[0];
+
+  // float ypr[3];
+  filter.update(a, g, m, dt);
+  filter.get_ypr(ypr);
+
+  lnz::Euler ea321({0, ypr[1], ypr[2]});
+  lnz::Vector<3> mv({m[0], m[1], m[2]});
+  mv = trans(ea321.get_dcm()) * mv;
+
+  float psi = atan2(-mv(1), mv(0));
+  if (psi < 0)
+  {
+    psi += 2 * M_PI;
+  }
+
+  ypr[0] = psi;
 }
 
 void ControlThread::init()
@@ -152,6 +182,8 @@ void ControlThread::init()
 // Performs one of three control actions
 void ControlThread::run()
 {
+  const float dt = PERIOD_MOTOR_CONTROL / 1000.0;
+
   while (1)
   {
     if (stop_flag)
@@ -161,35 +193,51 @@ void ControlThread::run()
       w_pid.reset_memory();
       y_pid.reset_memory();
       encoder::reset_count();
+      stop_flag = false;
 
-      suspendCallerUntil(END_OF_TIME);
+      // return;
+      // suspendCallerUntil(END_OF_TIME);
     }
-
-    const float dt = PERIOD_MOTOR_CONTROL / 1000.0;
-    float m_sp = 0.0; // Motor omega set-point
-
-    // Select motor omega set-point
-    if (current_mode == satellite_mode::motor)
+    else
     {
-      m_sp = telecommands[mosav].value;
-    }
-    else if (current_mode == satellite_mode::omega)
-    {
-      m_sp = omega_control(dt);
-    }
-    else if (current_mode == satellite_mode::yaw)
-    {
-      m_sp = position_control(dt);
-    }
-    else // Just in case
-    {
-      suspendCallerUntil(END_OF_TIME);
+      float m_sp = 0.0; // Motor omega set-point
+
+      // Select motor omega set-point
+      if (current_mode == satellite_mode::motor)
+      {
+        m_sp = telecommands[mosav].value;
+      }
+      else if (current_mode == satellite_mode::omega)
+      {
+        m_sp = omega_control(dt);
+      }
+      else if (current_mode == satellite_mode::yaw)
+      {
+        m_sp = position_control(dt);
+      }
+
+      // Perform inner control loop and actuate motor
+      float pwm = motor_control(m_sp, dt);
+      rw.set_duty_cycle(pwm);
     }
 
-    // Perform inner control loop and actuate motor
-    float pwm = motor_control(m_sp, dt);
-    rw.set_duty_cycle(pwm);
+    // Angular velocity
+    float g[3] = {0.0};
+    lsm9ds1_read_gyro(g);
+    g[2] += 0.667;
 
+    // Orientation
+    float ypr[3] = {0.0};
+    get_ypr(dt, ypr);
+
+    // Send the data to telemetry
+    // telemetry_tx.w = m_w;
+    telemetry_tx.g[0] = g[0];
+    telemetry_tx.g[1] = g[1];
+    telemetry_tx.g[2] = g[2];
+    telemetry_tx.ypr[0] = ypr[0];
+    telemetry_tx.ypr[1] = ypr[1];
+    telemetry_tx.ypr[2] = ypr[2];
     telemetry_topic.publish(telemetry_tx);
 
     suspendCallerUntil(NOW() + PERIOD_MOTOR_CONTROL * MILLISECONDS);
