@@ -186,6 +186,25 @@ void ControlThread::run()
 
   while (1)
   {
+    // Angular velocity
+    float g[3] = {0.0};
+    lsm9ds1_read_gyro(g);
+    g[2] += 0.667;
+
+    // Orientation
+    float ypr[3] = {0.0};
+    get_ypr(dt, ypr);
+
+    // Send the data to telemetry
+    // telemetry_tx.w = m_w;
+    telemetry_tx.g[0] = g[0];
+    telemetry_tx.g[1] = g[1];
+    telemetry_tx.g[2] = g[2];
+    telemetry_tx.ypr[0] = ypr[0];
+    telemetry_tx.ypr[1] = ypr[1];
+    telemetry_tx.ypr[2] = ypr[2];
+    telemetry_topic.publish(telemetry_tx);
+
     if (stop_flag)
     {
       rw.brake();
@@ -194,9 +213,6 @@ void ControlThread::run()
       y_pid.reset_memory();
       encoder::reset_count();
       stop_flag = false;
-
-      // return;
-      // suspendCallerUntil(END_OF_TIME);
     }
     else
     {
@@ -220,25 +236,6 @@ void ControlThread::run()
       float pwm = motor_control(m_sp, dt);
       rw.set_duty_cycle(pwm);
     }
-
-    // Angular velocity
-    float g[3] = {0.0};
-    lsm9ds1_read_gyro(g);
-    g[2] += 0.667;
-
-    // Orientation
-    float ypr[3] = {0.0};
-    get_ypr(dt, ypr);
-
-    // Send the data to telemetry
-    // telemetry_tx.w = m_w;
-    telemetry_tx.g[0] = g[0];
-    telemetry_tx.g[1] = g[1];
-    telemetry_tx.g[2] = g[2];
-    telemetry_tx.ypr[0] = ypr[0];
-    telemetry_tx.ypr[1] = ypr[1];
-    telemetry_tx.ypr[2] = ypr[2];
-    telemetry_topic.publish(telemetry_tx);
 
     suspendCallerUntil(NOW() + PERIOD_MOTOR_CONTROL * MILLISECONDS);
   }

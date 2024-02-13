@@ -26,7 +26,6 @@ void switch_board::resume_control(void)
   if (control_thread.stop_flag == true)
   {
     control_thread.stop_flag = false;
-    // control_thread.resume();
   }
 }
 
