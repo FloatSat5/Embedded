@@ -26,12 +26,8 @@ const float ki = 0;
 mahony filter(kp, ki);
 
 // Satellite angular rate control outer loop
-float omega_control(const float dt)
+float omega_control(const float w, const float dt)
 {
-  float g[3] = {0.0};
-  lsm9ds1_read_gyro(g);
-
-  const float w = g[2] + 0.667;
   const float w_sp = telecommands[sangv].value;
   const float w_err = w_sp - w;
 
@@ -40,10 +36,6 @@ float omega_control(const float dt)
   w_pid.set_ki(telecommands[gkisw].value);
 
   float sp = -w_pid.update(w_err, dt);
-
-  telemetry_tx.g[0] = g[0];
-  telemetry_tx.g[1] = g[1];
-  telemetry_tx.g[2] = g[2];
 
   return sp;
 }
@@ -76,17 +68,12 @@ float get_yaw(const float dt)
     psi += 2 * M_PI;
   }
 
-  telemetry_tx.ypr[0] = psi;
-  // telemetry_tx.ypr[1] = ypr[1];
-  telemetry_tx.ypr[2] = ypr[2];
-
   return psi;
 }
 
 // Satellite yaw control outer loop
-float position_control(const float dt)
+float position_control(const float y, const float dt)
 {
-  const float y = get_yaw(dt) * R2D;
   const float y_sp = telecommands[sangp].value;
   float y_err = y_sp - y;
 
@@ -100,7 +87,6 @@ float position_control(const float dt)
     y_err += 2 * 180;
   }
   y_err = -y_err;
-  telemetry_tx.ypr[1] = y_err;
 
   // Update gains (if changed using telecommand)
   y_pid.set_kp(telecommands[gkpsa].value);
@@ -111,15 +97,13 @@ float position_control(const float dt)
 }
 
 // Motor omega control inner loop
-float motor_control(const float m_sp, const float dt)
+float motor_control(const float m_sp, const float m_w, const float dt)
 {
-  const float m_w = encoder::get_omega_lpf(ENCODER_CPR, dt);
   const float m_err = m_sp - m_w;
 
   // Update gains (if changed using telecommand)
   m_pid.set_kp(telecommands[gkpmw].value);
   m_pid.set_ki(telecommands[gkimw].value);
-  telemetry_tx.w = m_w;
 
   return m_pid.update(m_err, dt);
 }
@@ -195,8 +179,11 @@ void ControlThread::run()
     float ypr[3] = {0.0};
     get_ypr(dt, ypr);
 
+    // Motor angular velocity
+    const float m_w = encoder::get_omega_lpf(ENCODER_CPR, dt);
+
     // Send the data to telemetry
-    // telemetry_tx.w = m_w;
+    telemetry_tx.w = m_w;
     telemetry_tx.g[0] = g[0];
     telemetry_tx.g[1] = g[1];
     telemetry_tx.g[2] = g[2];
@@ -225,15 +212,15 @@ void ControlThread::run()
       }
       else if (current_mode == satellite_mode::omega)
       {
-        m_sp = omega_control(dt);
+        m_sp = omega_control( g[2], dt);
       }
       else if (current_mode == satellite_mode::yaw)
       {
-        m_sp = position_control(dt);
+        m_sp = position_control(ypr[2] * R2D, dt);
       }
 
       // Perform inner control loop and actuate motor
-      float pwm = motor_control(m_sp, dt);
+      float pwm = motor_control(m_sp, m_w, dt);
       rw.set_duty_cycle(pwm);
     }
 
