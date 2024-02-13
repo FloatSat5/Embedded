@@ -203,6 +203,7 @@ void ControlThread::run()
     }
     else
     {
+      bool actuate_motor = true;
       float m_sp = 0.0; // Motor omega set-point
 
       // Select motor omega set-point
@@ -212,16 +213,23 @@ void ControlThread::run()
       }
       else if (current_mode == satellite_mode::omega)
       {
-        m_sp = omega_control( g[2], dt);
+        m_sp = omega_control(g[2], dt);
       }
       else if (current_mode == satellite_mode::yaw)
       {
         m_sp = position_control(ypr[2] * R2D, dt);
       }
+      else
+      {
+        actuate_motor = false;
+      }
 
       // Perform inner control loop and actuate motor
-      float pwm = motor_control(m_sp, m_w, dt);
-      rw.set_duty_cycle(pwm);
+      if (actuate_motor)
+      {
+        float pwm = motor_control(m_sp, m_w, dt);
+        rw.set_duty_cycle(pwm);
+      }
     }
 
     suspendCallerUntil(NOW() + PERIOD_MOTOR_CONTROL * MILLISECONDS);
