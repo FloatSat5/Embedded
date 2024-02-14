@@ -217,7 +217,7 @@ void ControlThread::run()
       }
       else if (current_mode == satellite_mode::yaw)
       {
-        m_sp = position_control(ypr[2] * R2D, dt);
+        m_sp = position_control(ypr[0] * R2D, dt);
       }
       else
       {

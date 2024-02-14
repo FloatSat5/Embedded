@@ -9,7 +9,7 @@
 */
 
 // me: 1, team:2
-#define WHO_IS_USER 1
+#define WHO_IS_USER 2
 
 // Telemetry buffer length
 #define BLUETOOTH_BUFFER_LEN 200
