@@ -173,7 +173,7 @@ void ControlThread::run()
     // Angular velocity
     float g[3] = {0.0};
     lsm9ds1_read_gyro(g);
-    g[2] += 0.667;
+    // g[2] += 0.667;
 
     // Orientation
     float ypr[3] = {0.0};
