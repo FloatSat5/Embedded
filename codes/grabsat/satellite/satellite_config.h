@@ -9,7 +9,7 @@
 */
 
 // me: 1, team:2
-#define WHO_IS_USER 2
+#define WHO_IS_USER 1
 
 // Telemetry buffer length
 #define BLUETOOTH_BUFFER_LEN 200
@@ -84,6 +84,6 @@
 #define PID_YAW_KD 0.0
 
 // Yaw gyro bias
-#define YAW_GYRO_BIAS 0.0
+#define YAW_GYRO_BIAS 0.069
 
 #endif // satellite_config.h
