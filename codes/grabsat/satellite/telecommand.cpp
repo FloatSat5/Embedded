@@ -145,6 +145,13 @@ void telecommand::execute(const telecommand_idx idx)
     break;
   }
 
+  case fideb:
+  {
+    current_mode = satellite_mode::debris;
+    encoder::reset_count();
+    break;
+  }
+
   default:
     break;
   }

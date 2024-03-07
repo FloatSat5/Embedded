@@ -219,6 +219,23 @@ void ControlThread::run()
       {
         m_sp = position_control(ypr[0] * R2D, dt);
       }
+      else if (current_mode == satellite_mode::debris)
+      {
+        float temp_yaw_Command = ypr[0] * R2D + telecommands[fideb].value;
+
+        while(temp_yaw_Command > 360)
+        {
+          temp_yaw_Command -= 360;
+        }
+
+        while(temp_yaw_Command < 0)
+        {
+          temp_yaw_Command += 360;
+        }
+
+        telecommands[sangp].value = temp_yaw_Command;
+        current_mode = satellite_mode::yaw;
+      }
       else
       {
         actuate_motor = false;
